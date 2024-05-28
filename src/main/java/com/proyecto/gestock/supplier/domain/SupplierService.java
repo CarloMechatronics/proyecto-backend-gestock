@@ -22,7 +22,7 @@ public class SupplierService {
         this.modelMapper = modelMapper;
     }
 
-    private SupplierDTO getSupplierById(Long id) {
+    public SupplierDTO getSupplierById(Long id) {
         Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Didn´t found"));
         return modelMapper.map(supplier, SupplierDTO.class);
     }
