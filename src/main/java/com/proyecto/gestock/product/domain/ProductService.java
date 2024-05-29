@@ -1,12 +1,7 @@
 package com.proyecto.gestock.product.domain;
 
 import com.proyecto.gestock.exceptions.ResourceNotFoundException;
-import com.proyecto.gestock.product.infrastructure.ProductRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.proyecto.gestock.exceptions.ResourceNotFoundException;
-import com.proyecto.gestock.product.dto.ProductDTO;
+import com.proyecto.gestock.product.dto.ProductUpdateDto;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,10 +26,10 @@ public class ProductService {
         return productRepository.findAll();
     }
 
-    public List<ProductDTO> getAllProducts(){
+    public List<ProductUpdateDto> getAllProducts(){
         List<Product> products = productRepository.findAll();
         return products.stream()
-                .map(product -> modelMapper.map(product, ProductDTO.class))
+                .map(product -> modelMapper.map(product, ProductUpdateDto.class))
                 .collect(Collectors.toList());
     }
 
@@ -43,9 +38,9 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
     }
 
-    public ProductDTO getProductById(Long id){
+    public ProductUpdateDto getProductById(Long id){
         Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found with that id"));
-        return modelMapper.map(product, ProductDTO.class);
+        return modelMapper.map(product, ProductUpdateDto.class);
     }
 
 
@@ -77,20 +72,20 @@ public class ProductService {
     public boolean existsById(Long id) {
         return productRepository.existsById(id);
     }
-    public ProductDTO createProduct(ProductDTO productDTO){
-        Product product = modelMapper.map(productDTO, Product.class);
+    public ProductUpdateDto createProduct(ProductUpdateDto productUpdateDto){
+        Product product = modelMapper.map(productUpdateDto, Product.class);
         product = productRepository.save(product);
-        return modelMapper.map(product, ProductDTO.class);
+        return modelMapper.map(product, ProductUpdateDto.class);
     }
 
-    public ProductDTO updateProduct(Long id, ProductDTO productDTO){
+    public ProductUpdateDto updateProduct(Long id, ProductUpdateDto productUpdateDto){
         if(!productRepository.existsById(id)){
             throw new ResourceNotFoundException("Product not found with that id");
         }
-        Product product = modelMapper.map(productDTO, Product.class);
+        Product product = modelMapper.map(productUpdateDto, Product.class);
         product.setId(id);
         product = productRepository.save(product);
-        return modelMapper.map(product, ProductDTO.class);
+        return modelMapper.map(product, ProductUpdateDto.class);
     }
     public void deleteProduct(Long id){
         if(!productRepository.existsById(id)){

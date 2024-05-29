@@ -22,10 +22,10 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(errorMessage, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<String> UnauthorizedOperationExceptionHandler(Exception ex, WebRequest request) {
+    @ExceptionHandler(UnauthorizedOperationException.class)
+    public ResponseEntity<String> unauthorizedOperationExceptionHandler(UnauthorizedOperationException ex, WebRequest request) {
         String errorMessage = String.format("Error: %s, Request Details: %s", ex.getMessage(), request.getDescription(false));
         // TODO: Agregar un body
-        return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED);
+        return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED); // UNAUTHORIZED O FORBIDDEN
     }
 }

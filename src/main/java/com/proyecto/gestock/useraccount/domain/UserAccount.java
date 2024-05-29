@@ -1,6 +1,5 @@
 package com.proyecto.gestock.useraccount.domain;
 
-import com.proyecto.gestock.order.domain.Order;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -9,16 +8,13 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import java.util.Objects;
 
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
 public class UserAccount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,8 +34,8 @@ public class UserAccount {
     @Column(nullable = false)
     private String role;
 
-    @OneToMany
-    private List<Order> orders = new ArrayList<>();
+//    @OneToMany(mappedBy = "userAccount", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private List<Order> orders = new ArrayList<>();
 
     @Override
     public int hashCode() {

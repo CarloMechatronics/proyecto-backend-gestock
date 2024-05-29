@@ -2,7 +2,7 @@ package com.proyecto.gestock.product.application;
 
 import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.product.domain.ProductService;
-import com.proyecto.gestock.product.dto.ProductDTO;
+import com.proyecto.gestock.product.dto.ProductUpdateDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -31,20 +31,15 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) {
-        ProductDTO createdProduct = productService.createProduct(productDTO);
+    public ResponseEntity<ProductUpdateDto> createProduct(@RequestBody ProductUpdateDto productUpdateDto) {
+        ProductUpdateDto createdProduct = productService.createProduct(productUpdateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<ProductDTO> updateProduct(@PathVariable Long id, @RequestBody ProductDTO productDTO) {
-        ProductDTO updatedProduct = productService.updateProduct(id, productDTO);
+    public ResponseEntity<ProductUpdateDto> updateProduct(@PathVariable Long id, @RequestBody ProductUpdateDto productUpdateDto) {
+        ProductUpdateDto updatedProduct = productService.updateProduct(id, productUpdateDto);
         return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody Product product) {
-        return new ResponseEntity<>(productService.update(id, product), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}")

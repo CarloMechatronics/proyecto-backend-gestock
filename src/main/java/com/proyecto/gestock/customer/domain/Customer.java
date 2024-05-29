@@ -1,10 +1,10 @@
 package com.proyecto.gestock.customer.domain;
 
-import jakarta.persistence.*;
-import com.proyecto.gestock.order.domain.Order;
+import com.proyecto.gestock.purchaseorder.domain.PurchaseOrder;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -33,10 +33,11 @@ public class Customer {
 
     @NotNull
     @Email
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     @NotNull
+    @PastOrPresent
     @Column(nullable = false)
     private LocalDate registrationDate;
 
@@ -44,8 +45,8 @@ public class Customer {
     @Column(nullable = false)
     private String status;
 
-    @OneToMany(mappedBy = "customer")
-    private List<Order> orders = new ArrayList<>();
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<PurchaseOrder> purchaseOrders = new ArrayList<>();
 
     @Override
     public int hashCode() {

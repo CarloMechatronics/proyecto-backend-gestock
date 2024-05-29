@@ -1,11 +1,11 @@
 package com.proyecto.gestock.orderitem.domain;
 
-import com.proyecto.gestock.order.domain.Order;
+import com.proyecto.gestock.purchaseorder.domain.PurchaseOrder;
 import com.proyecto.gestock.product.domain.Product;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,8 +24,8 @@ public class OrderItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Quantity cannot be null")
-    @Min(value = 0, message = "Quantity must be zero or positive")
+    @NotNull
+    @PositiveOrZero
     @Column(nullable = false)
     private Integer quantity;
 
@@ -35,8 +35,8 @@ public class OrderItem {
     private BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name = "order_id", nullable = false)
-    private Order order;
+    @JoinColumn(name = "purchaseOrder_id", nullable = false)
+    private PurchaseOrder purchaseOrder;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
@@ -61,7 +61,7 @@ public class OrderItem {
                 "id=" + id +
                 ", quantity=" + quantity +
                 ", price=" + price +
-                ", order=" + (order != null ? order.getId() : "null") +
+                ", order=" + (purchaseOrder != null ? purchaseOrder.getId() : "null") +
                 ", product=" + (product != null ? product.getId() : "null") +
                 '}';
     }

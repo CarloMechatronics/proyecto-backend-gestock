@@ -1,7 +1,7 @@
 package com.proyecto.gestock.supplier.domain;
 
-import jakarta.persistence.*;
 import com.proyecto.gestock.product.domain.Product;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -10,20 +10,18 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.Objects;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-@Entity
-@Setter
-@Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Setter
+@Getter
+@Entity
 public class Supplier {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
     private Long id;
 
     @NotNull
@@ -41,7 +39,7 @@ public class Supplier {
     @Column(nullable = false)
     private String phone;
 
-    @OneToMany(mappedBy = "supplier")
+    @OneToMany(mappedBy = "supplier", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();
 
     @Override
