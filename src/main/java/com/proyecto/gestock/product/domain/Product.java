@@ -8,7 +8,9 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
@@ -16,6 +18,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
 @Entity
@@ -55,19 +59,31 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<OrderItem> orderItems = new ArrayList<>();
 
-    
+    public void addStock(int amount) {
+        if (amount < 0)
+            throw new IllegalArgumentException("Amount must be positive");
+        this.stock += amount;
+    }
+
+    public void subtractStock(int amount) {
+        if (amount < 0)
+            throw new IllegalArgumentException("Amount must be positive");
+        if (this.stock < amount)
+            throw new IllegalArgumentException("Insufficient stock to subtract");
+        this.stock -= amount;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Product product = (Product) o;
-        return id != null && id.equals(product.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(id);
+        return Objects.equals(id, product.id);
     }
 
     @Override
