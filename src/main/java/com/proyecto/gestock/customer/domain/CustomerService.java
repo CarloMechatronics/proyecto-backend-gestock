@@ -31,13 +31,13 @@ public class CustomerService {
         return modelMapper.map(customer, CustomerDTO.class);
     }
 
-    public CustomerDTO getCustomerByUsername(String username) {
-        Customer customer = customerRepository.findByUsername(username);
-        if(customer == null) {
-            throw new ResourceNotFoundException("Customer not found");
-        }
-        return modelMapper.map(customer, CustomerDTO.class);
-    }
+//    public CustomerDTO getCustomerByUsername(String username) {
+//        Customer customer = customerRepository.findByUsername(username);
+//        if(customer == null) {
+//            throw new ResourceNotFoundException("Customer not found");
+//        }
+//        return modelMapper.map(customer, CustomerDTO.class);
+//    }
 
     public CustomerDTO createCustomer(CustomerDTO customerDTO) {
         Customer customer = modelMapper.map(customerDTO, Customer.class);

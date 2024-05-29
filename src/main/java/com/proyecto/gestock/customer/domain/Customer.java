@@ -12,13 +12,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
 import java.util.Date;
 
-@Entity
+@NoArgsConstructor
+@AllArgsConstructor
 @Setter
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
+@Entity
 public class Customer {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +34,7 @@ public class Customer {
     private String email;
 
     @NotNull
-    private Date registrationDate;
+    private LocalDate registrationDate;
 
     @NotNull
     private String status;

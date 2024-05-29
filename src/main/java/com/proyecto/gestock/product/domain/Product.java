@@ -55,6 +55,8 @@ public class Product {
     @OneToMany(mappedBy = "product")
     private List<OrderItem> orderItems = new ArrayList<>();
 
+    
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

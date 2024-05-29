@@ -39,10 +39,10 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.getCustomerByEmail(email));
     }
 
-    @GetMapping("/username")
-    public ResponseEntity<CustomerDTO> getCustomerByUsername(@RequestParam String username) {
-        return ResponseEntity.ok(customerService.getCustomerByUsername(username));
-    }
+//    @GetMapping("/username")
+//    public ResponseEntity<CustomerDTO> getCustomerByUsername(@RequestParam String username) {
+//        return ResponseEntity.ok(customerService.getCustomerByUsername(username));
+//    }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<CustomerDTO> deleteCustomer(@PathVariable Long id) {
