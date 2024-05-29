@@ -1,10 +1,11 @@
-package com.proyecto.gestock.order.domain;
+package com.proyecto.gestock.purchaseorder.domain;
 
 import com.proyecto.gestock.customer.domain.Customer;
 import com.proyecto.gestock.orderitem.domain.OrderItem;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PastOrPresent;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,12 +22,13 @@ import java.util.Objects;
 @Setter
 @Getter
 @Entity
-public class Order {
+public class PurchaseOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @NotNull
+    @PastOrPresent
     @Column(nullable = false)
     private LocalDateTime orderDate;
 
@@ -55,8 +57,8 @@ public class Order {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Order order = (Order) o;
-        return Objects.equals(id, order.id);
+        PurchaseOrder purchaseOrder = (PurchaseOrder) o;
+        return Objects.equals(id, purchaseOrder.id);
     }
 
     @Override
