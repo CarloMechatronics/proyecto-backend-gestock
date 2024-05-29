@@ -1,15 +1,16 @@
 package com.proyecto.gestock.useraccount.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.proyecto.gestock.order.domain.Order;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Setter
@@ -30,4 +31,7 @@ public class UserAccount {
 
     @NotNull
     private String role;
+
+    @OneToMany
+    private List<Order> orders = new ArrayList<>();
 }
