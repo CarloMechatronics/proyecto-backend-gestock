@@ -3,10 +3,9 @@ package com.proyecto.gestock.configuration;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.stereotype.Component;
 
 @Configuration
-public class BeanUtils {
+public class AppConfig {
     @Bean
     public ModelMapper modelMapper() {
         return new ModelMapper();
