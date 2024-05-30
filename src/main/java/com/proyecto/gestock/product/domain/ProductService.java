@@ -72,6 +72,7 @@ public class ProductService {
     public boolean existsById(Long id) {
         return productRepository.existsById(id);
     }
+
     public ProductUpdateDto createProduct(ProductUpdateDto productUpdateDto){
         Product product = modelMapper.map(productUpdateDto, Product.class);
         product = productRepository.save(product);
