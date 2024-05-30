@@ -10,5 +10,6 @@ import lombok.*;
 public class UserAccountDTO {
     private String username;
     private String email;
+    private String urlProfilePhoto;
     private String role;
 }

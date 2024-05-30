@@ -38,6 +38,7 @@ public class SupplierService {
         return dtos;
     }
 
+
     public void deleteSupplierById(Long id) {
         Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Didn't found"));
         supplierRepository.deleteById(id);
