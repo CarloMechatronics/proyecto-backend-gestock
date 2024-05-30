@@ -40,12 +40,6 @@ public class UserAccount {
     @Column(nullable = false)
     private String role;
 
-    @Column(nullable = false)
-    private String urlProfilePhoto;
-
-//    @OneToMany(mappedBy = "userAccount", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private List<Order> orders = new ArrayList<>();
-
     @Override
     public int hashCode() {
         return Objects.hash(id);
@@ -68,6 +62,4 @@ public class UserAccount {
                 ", role='" + role + '\'' +
                 '}';
     }
-
-
 }

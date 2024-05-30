@@ -41,10 +41,6 @@ public class Customer {
     @Column(nullable = false)
     private LocalDate registrationDate;
 
-    @NotNull
-    @Column(nullable = false)
-    private String status;
-
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseOrder> purchaseOrders = new ArrayList<>();
 
@@ -68,7 +64,6 @@ public class Customer {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", registrationDate=" + registrationDate +
-                ", status='" + status + '\'' +
                 '}';
     }
 }

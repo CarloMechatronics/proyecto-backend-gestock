@@ -1,6 +1,7 @@
 package com.proyecto.gestock.product.dto;
 
 import com.proyecto.gestock.category.domain.Category;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -24,6 +25,10 @@ public class ProductUpdateDto {
     @NotNull(message = "Price cannot be null")
     @Positive(message = "Price must be greater than 0.0")
     private BigDecimal price;
+
+    @NotNull(message = "Availability cannot be null")
+    @Column(nullable = false)
+    private Boolean available;
 
     @NotNull
     private Category category;
