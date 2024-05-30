@@ -78,7 +78,9 @@ public class CustomerService {
     }
 
     public List<Product> getAvailableProducts() {
-        return productRepository.findAllByAvailableTrue();
+        List<Product> availableProducts = productRepository.findAllByAvailableTrue();
+        return availableProducts.stream().filter(Product::isAvailable)
+                .collect(Collectors.toList());
     }
 
     public PurchaseOrder getPurchaseOrder(Long id) {

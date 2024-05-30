@@ -79,6 +79,10 @@ public class Product {
         this.stock -= amount;
     }
 
+    public boolean isAvailable() {
+        return available;
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id);

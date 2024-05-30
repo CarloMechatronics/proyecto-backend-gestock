@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
+import java.nio.file.AccessDeniedException;
+
 @ControllerAdvice
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
@@ -28,4 +30,11 @@ public class GlobalExceptionHandler {
         // TODO: Agregar un body
         return new ResponseEntity<>(errorMessage, HttpStatus.UNAUTHORIZED); // UNAUTHORIZED O FORBIDDEN
     }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<String> illegalArgumentExceptionHandler(IllegalArgumentException ex, WebRequest request) {
+        String errorMessage = String.format("Error: %s, Request Details: %s", ex.getMessage(), request.getDescription(false));
+        return new ResponseEntity<>(errorMessage, HttpStatus.BAD_REQUEST);
+    }
+
 }
