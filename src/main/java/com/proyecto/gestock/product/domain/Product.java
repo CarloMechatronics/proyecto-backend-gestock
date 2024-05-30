@@ -44,6 +44,10 @@ public class Product {
     private BigDecimal price;
 
     @NotNull
+    @Column(nullable = false)
+    private Boolean available = true;
+
+    @NotNull
     @PositiveOrZero
     @Column(nullable = false)
     private Integer stock;
@@ -58,6 +62,8 @@ public class Product {
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
+
+
 
     public void addStock(int amount) {
         if (amount < 0)
