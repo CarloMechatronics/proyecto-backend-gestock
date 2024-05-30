@@ -1,6 +1,7 @@
 package com.proyecto.gestock.useraccount.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,11 @@ public class UserAccount {
     @Size(min = 5, max = 80)
     @Column(nullable = false)
     private String password;
+
+    @NotNull
+    @Email
+    @Column(nullable = false)
+    private String email;
 
     @NotNull
     @Column(nullable = false)

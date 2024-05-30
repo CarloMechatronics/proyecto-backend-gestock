@@ -1,8 +1,11 @@
 package com.proyecto.gestock.customer.dto;
 
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Setter
+@Getter
+@AllArgsConstructor
+@NoArgsConstructor
 public class CustomerDTO {
     private Long id;
     private String name;

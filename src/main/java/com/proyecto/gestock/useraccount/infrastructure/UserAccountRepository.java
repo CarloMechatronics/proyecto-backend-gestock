@@ -1,11 +1,12 @@
 package com.proyecto.gestock.useraccount.infrastructure;
 
 import com.proyecto.gestock.useraccount.domain.UserAccount;
+import com.proyecto.gestock.useraccount.dto.UserAccountDTO;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserAccountRepository extends JpaRepository<UserAccount, Long> {
+import java.util.List;
 
-
+public interface UserAccountRepository extends JpaRepository<UserAccount, Long> { ;
 }
 
     /*
