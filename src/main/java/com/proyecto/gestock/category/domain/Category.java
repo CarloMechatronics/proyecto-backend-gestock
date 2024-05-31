@@ -2,6 +2,8 @@ package com.proyecto.gestock.category.domain;
 
 import com.proyecto.gestock.product.domain.Product;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -23,10 +25,14 @@ public class Category {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     @Size(min = 3, max = 16)
     @Column(nullable = false)
     private String name;
+
+    @NotEmpty
+    @Column(nullable = false)
+    private String imageUrl; // TODO: Agregar una imagen por default
 
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Product> products = new ArrayList<>();

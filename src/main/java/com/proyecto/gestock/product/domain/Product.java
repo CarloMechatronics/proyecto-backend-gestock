@@ -4,10 +4,7 @@ import com.proyecto.gestock.category.domain.Category;
 import com.proyecto.gestock.orderitem.domain.OrderItem;
 import com.proyecto.gestock.supplier.domain.Supplier;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
-import jakarta.validation.constraints.PositiveOrZero;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,12 +25,12 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     @Size(min = 6, max = 60)
     @Column(nullable = false)
     private String name;
 
-    @NotNull
+    @NotBlank
     @Size(max = 1000)
     @Column(nullable = false)
     private String description;
@@ -44,13 +41,13 @@ public class Product {
     private BigDecimal price;
 
     @NotNull
-    @Column(nullable = false)
-    private Boolean available = true;
-
-    @NotNull
     @PositiveOrZero
     @Column(nullable = false)
     private Integer stock;
+
+    @NotNull
+    @Column(nullable = false)
+    private Boolean available = true;
 
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
