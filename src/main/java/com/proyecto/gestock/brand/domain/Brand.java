@@ -30,7 +30,7 @@ public class Brand {
 
     @NotEmpty
     @Column(unique = true, nullable = false)
-    private String logo;
+    private String logo = "https://cdn4.iconfinder.com/data/icons/core-ui-outlined/32/outlined_placeholder-256.png";
 
     @NotNull
     @Column(nullable = false)

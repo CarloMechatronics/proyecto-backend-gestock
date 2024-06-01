@@ -3,6 +3,7 @@ package com.proyecto.gestock.brand.domain;
 import com.proyecto.gestock.brand.dto.BrandDisplay;
 import com.proyecto.gestock.brand.dto.BrandDisplayDto;
 import com.proyecto.gestock.brand.infrastructure.BrandRepository;
+import com.proyecto.gestock.exceptions.ResourceNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,16 +27,25 @@ public class BrandService {
         return brandRepository.findAll();
     }
 
+    public Brand findBrandById(Long id) {
+        return brandRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Brand with id " + id + " not found"));
+    }
+
+    public List<Brand> findAllBrandsbyActive(Boolean active) {
+        return brandRepository.findAllByActive(active);
+    }
+
     //--------CUSTOMER--------//
-    public List<BrandDisplayDto> findAllBrandsByActiveTrue() {
-        List<BrandDisplay> brandDisplayList = brandRepository.findAllByActiveTrue();
+    public List<BrandDisplayDto> findAllValidBrandsByNameContains(String namePart) {
+        List<BrandDisplay> brandDisplayList = brandRepository.findAllByNameContainsAndActiveTrue(namePart);
         return brandDisplayList.stream()
                 .map(brandDisplay -> modelMapper.map(brandDisplay, BrandDisplayDto.class))
                 .collect(Collectors.toList());
     }
 
-    public List<BrandDisplayDto> findAllByNameContains(String namePart) {
-        List<BrandDisplay> brandDisplayList = brandRepository.findAllByNameContains(namePart);
+    public List<BrandDisplayDto> findAllValidBrands() {
+        List<BrandDisplay> brandDisplayList = brandRepository.findAllByActiveTrue();
         return brandDisplayList.stream()
                 .map(brandDisplay -> modelMapper.map(brandDisplay, BrandDisplayDto.class))
                 .collect(Collectors.toList());

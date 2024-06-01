@@ -6,10 +6,7 @@ import com.proyecto.gestock.brand.dto.BrandDisplayDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,14 +26,24 @@ public class BrandController {
         return new ResponseEntity<>(brandService.findAllBrands(), HttpStatus.OK);
     }
 
-    //--------CUSTOMER--------//
-    @GetMapping("/all")
-    public ResponseEntity<List<BrandDisplayDto>> getAllBrandsDisplay() {
-        return new ResponseEntity<>(brandService.findAllBrandsByActiveTrue(), HttpStatus.OK);
+    @GetMapping("/{id}")
+    public ResponseEntity<Brand> getBrandById(@PathVariable Long id) {
+        return new ResponseEntity<>(brandService.findBrandById(id), HttpStatus.OK);
     }
 
+    @GetMapping("/active")
+    public ResponseEntity<List<Brand>> getBrandById(@RequestParam Boolean active) {
+        return new ResponseEntity<>(brandService.findAllBrandsbyActive(active), HttpStatus.OK);
+    }
+
+    //--------CUSTOMER--------//
     @GetMapping("/name")
-    public ResponseEntity<List<BrandDisplayDto>> getAllByNameContains(@RequestParam String namePart) {
-        return new ResponseEntity<>(brandService.findAllByNameContains(namePart), HttpStatus.OK);
+    public ResponseEntity<List<BrandDisplayDto>> getAllValidBrandsByNameContains(@RequestParam String namePart) {
+        return new ResponseEntity<>(brandService.findAllValidBrandsByNameContains(namePart), HttpStatus.OK);
+    }
+
+    @GetMapping("/all")
+    public ResponseEntity<List<BrandDisplayDto>> getAllBrandsDisplay() {
+        return new ResponseEntity<>(brandService.findAllValidBrands(), HttpStatus.OK);
     }
 }
