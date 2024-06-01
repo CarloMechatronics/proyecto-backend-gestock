@@ -17,6 +17,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByStockLessThanEqual(Integer stock);
 
     //--------CUSTOMER--------//
+    List<ProductDisplay> findByNameContainsAndAvailableTrueAndStockGreaterThan(String name, Integer stock);
     ProductDisplay findByNameAndAvailableTrueAndStockGreaterThan(String name, Integer stock);
     List<ProductDisplay> findAllByAvailableTrueAndCategoryNameAndStockGreaterThan(String categoryName, Integer stock);
 }

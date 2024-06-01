@@ -4,10 +4,11 @@ import com.proyecto.gestock.category.domain.Category;
 
 import java.math.BigDecimal;
 
-public interface ProductDisplay {
+public interface ProductInfo {
     Long getId();
     String getName();
     String getSummary();
+    String getDescription();
     BigDecimal getPrice();
     Category getCategory();
 }

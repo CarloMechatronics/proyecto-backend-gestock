@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ProductDisplayDto {
+public class ProductInfoDto {
     @NotNull(message = "ID cannot be null")
     private Long id;
 
@@ -28,6 +28,10 @@ public class ProductDisplayDto {
     @NotBlank
     @Size(max = 255, message = "Summary must be less than 255 characters")
     private String summary;
+
+    @NotBlank
+    @Size(max = 1020, message = "Description must be less than 1020 characters")
+    private String description;
 
     @NotNull(message = "Price cannot be null")
     @Positive(message = "Price must be greater than 0.0")

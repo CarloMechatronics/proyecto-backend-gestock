@@ -34,7 +34,7 @@ public class Category {
     @Column(nullable = false)
     private String imageUrl; // TODO: Agregar una imagen por default
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category")
     private List<Product> products = new ArrayList<>();
 
     @Override

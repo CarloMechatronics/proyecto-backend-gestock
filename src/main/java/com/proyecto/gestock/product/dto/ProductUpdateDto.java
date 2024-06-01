@@ -19,7 +19,11 @@ public class ProductUpdateDto {
     private String name;
 
     @NotBlank
-    @Size(max = 1000, message = "Description must be less than 1000 characters")
+    @Size(max = 255, message = "Summary must be less than 255 characters")
+    private String summary;
+
+    @NotBlank
+    @Size(max = 1020, message = "Description must be less than 1020 characters")
     private String description;
 
     @NotNull(message = "Price cannot be null")

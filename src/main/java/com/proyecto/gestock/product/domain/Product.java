@@ -1,5 +1,6 @@
 package com.proyecto.gestock.product.domain;
 
+import com.proyecto.gestock.brand.domain.Brand;
 import com.proyecto.gestock.category.domain.Category;
 import com.proyecto.gestock.orderitem.domain.OrderItem;
 import com.proyecto.gestock.supplier.domain.Supplier;
@@ -31,12 +32,17 @@ public class Product {
     private String name;
 
     @NotBlank
-    @Size(max = 1000)
+    @Size(max = 255)
+    @Column(nullable = false)
+    private String summary;
+
+    @NotBlank
+    @Size(max = 1020)
     @Column(nullable = false)
     private String description;
 
     @NotNull
-    @Positive(message = "Price must be greater than 0.0")
+    @Positive
     @Column(nullable = false)
     private BigDecimal price;
 
@@ -49,18 +55,23 @@ public class Product {
     @Column(nullable = false)
     private Boolean available = true;
 
+    @NotNull
+    @ManyToOne
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
+
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
 
+    @NotNull
     @ManyToOne
     @JoinColumn(name = "supplier_id", nullable = false)
     private Supplier supplier;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
-
-
 
     public void addStock(int amount) {
         if (amount < 0)

@@ -22,12 +22,12 @@ public class ProductController {
 
     //--------ADMIN--------//
     @GetMapping
-    public ResponseEntity<List<Product>> getProducts() {
+    public ResponseEntity<List<Product>> getAllProducts() {
         return new ResponseEntity<>(productService.findAllProducts(), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Product> getProduct(@PathVariable Long id) {
+    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
         return new ResponseEntity<>(productService.findProductById(id), HttpStatus.OK);
     }
 
@@ -36,7 +36,7 @@ public class ProductController {
         return new ResponseEntity<>(productService.findAllProductsByCategoryId(id), HttpStatus.OK);
     }
 
-    @GetMapping("stock-greater")
+    @GetMapping("/stock-greater")
     public ResponseEntity<List<Product>> getProductsByStockGreaterThanEqual(@RequestParam Integer stock) {
         return new ResponseEntity<>(productService.findAllProductsByStockGreaterThanEqual(stock), HttpStatus.OK);
     }
@@ -63,11 +63,6 @@ public class ProductController {
         return new ResponseEntity<>(productService.findAllValidProductsByCategoryName(categoryName), HttpStatus.OK);
     }
 
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Product> getProductById(@PathVariable Long id) {
-//        return new ResponseEntity<>(productService.findById(id), HttpStatus.OK);
-//    }
-//
 //    @PostMapping
 //    public ResponseEntity<ProductUpdateDto> createProduct(@RequestBody ProductUpdateDto productUpdateDto) {
 //        ProductUpdateDto createdProduct = productService.createProduct(productUpdateDto);
