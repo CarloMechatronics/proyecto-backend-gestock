@@ -38,7 +38,7 @@ public class BrandController {
 
     //--------CUSTOMER--------//
     @GetMapping("/name")
-    public ResponseEntity<List<BrandDisplayDto>> getAllValidBrandsByNameContains(@RequestParam String namePart) {
+    public ResponseEntity<List<BrandDisplayDto>> getAllValidBrandsByNameContains(@RequestParam("name") String namePart) {
         return new ResponseEntity<>(brandService.findAllValidBrandsByNameContains(namePart), HttpStatus.OK);
     }
 

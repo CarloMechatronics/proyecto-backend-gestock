@@ -3,11 +3,13 @@ package com.proyecto.gestock.product.infrastructure;
 import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.product.dto.ProductDisplay;
 import com.proyecto.gestock.product.dto.ProductDisplayDto;
+import com.proyecto.gestock.product.dto.ProductInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface ProductRepository extends JpaRepository<Product, Long> {
@@ -22,7 +24,8 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllBySupplierId(Long id);
 
     //--------CUSTOMER--------//
-    ProductDisplay findByNameAndAvailableTrueAndStockGreaterThan(String name, Integer stock);
+    Optional<ProductInfo> findByNameAndAvailableTrueAndStockGreaterThan(String name, Integer stock);
     List<ProductDisplay> findByNameContainsAndAvailableTrueAndStockGreaterThan(String name, Integer stock);
+    List<ProductDisplay> findAllByPriceGreaterThanEqualAndPriceLessThanEqualAndAvailableTrueAndStockGreaterThan(BigDecimal min, BigDecimal max, Integer stock);
     List<ProductDisplay> findAllByCategoryNameAndAvailableTrueAndStockGreaterThan(String categoryName, Integer stock);
 }

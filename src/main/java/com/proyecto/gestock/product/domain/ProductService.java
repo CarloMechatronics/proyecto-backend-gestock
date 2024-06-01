@@ -3,6 +3,8 @@ package com.proyecto.gestock.product.domain;
 import com.proyecto.gestock.exceptions.ResourceNotFoundException;
 import com.proyecto.gestock.product.dto.ProductDisplay;
 import com.proyecto.gestock.product.dto.ProductDisplayDto;
+import com.proyecto.gestock.product.dto.ProductInfo;
+import com.proyecto.gestock.product.dto.ProductInfoDto;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +36,11 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
     }
 
-    public List<Product> findProductByName(String namePart) {
+    public List<Product> findAllProductsByNameContains(String namePart) {
         return productRepository.findAllByNameContains(namePart);
     }
 
-    public List<Product> findProductByPriceRange(BigDecimal min, BigDecimal max) {
+    public List<Product> findAllProductsByPriceRange(BigDecimal min, BigDecimal max) {
         return productRepository.findAllByPriceGreaterThanEqualAndPriceLessThanEqual(min, max);
     }
 
@@ -67,12 +69,25 @@ public class ProductService {
     }
 
     //--------CUSTOMER--------//
-    public ProductDisplayDto findValidProductByName(String name) {
-        return modelMapper.map(productRepository.findByNameAndAvailableTrueAndStockGreaterThan(name, 0), ProductDisplayDto.class);
+    public ProductInfoDto findValidProductByName(String name) {
+        ProductInfo productInfo = productRepository.findByNameAndAvailableTrueAndStockGreaterThan(name, 0)
+                .orElseThrow(() -> new ResourceNotFoundException("Product with name '" + name + "' not found"));
+
+        return modelMapper.map(productInfo, ProductInfoDto.class);
     }
 
     public List<ProductDisplayDto> findAllValidProductsByNameContains(String namePart) {
-        List<ProductDisplay> productDisplayList = productRepository.findByNameContainsAndAvailableTrueAndStockGreaterThan(namePart, 0);
+        List<ProductDisplay> productDisplayList = productRepository
+                .findByNameContainsAndAvailableTrueAndStockGreaterThan(namePart, 0);
+
+        return productDisplayList.stream()
+                .map(productDisplay -> modelMapper.map(productDisplay, ProductDisplayDto.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductDisplayDto> findAllValidProductByPriceRange(BigDecimal min, BigDecimal max) {
+        List<ProductDisplay> productDisplayList = productRepository
+                .findAllByPriceGreaterThanEqualAndPriceLessThanEqualAndAvailableTrueAndStockGreaterThan(min, max, 0);
 
         return productDisplayList.stream()
                 .map(productDisplay -> modelMapper.map(productDisplay, ProductDisplayDto.class))
@@ -80,14 +95,13 @@ public class ProductService {
     }
 
     public List<ProductDisplayDto> findAllValidProductsByCategoryName(String categoryName) {
-        List<ProductDisplay> productDisplayList = productRepository.findAllByCategoryNameAndAvailableTrueAndStockGreaterThan(categoryName , 0);
+        List<ProductDisplay> productDisplayList = productRepository
+                .findAllByCategoryNameAndAvailableTrueAndStockGreaterThan(categoryName , 0);
 
         return productDisplayList.stream()
                 .map(productDisplay -> modelMapper.map(productDisplay, ProductDisplayDto.class))
                 .collect(Collectors.toList());
     }
-
-
 
 //    public List<ProductDisplayDto> getAllProducts(){
 //        List<Product> products = productRepository.findAll();
