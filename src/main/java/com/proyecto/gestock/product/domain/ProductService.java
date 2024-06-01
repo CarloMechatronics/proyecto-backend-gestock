@@ -8,6 +8,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -33,8 +34,12 @@ public class ProductService {
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
     }
 
-    public List<Product> findAllProductsByCategoryId(Long id) {
-        return productRepository.findAllByCategoryId(id);
+    public List<Product> findProductByName(String namePart) {
+        return productRepository.findAllByNameContains(namePart);
+    }
+
+    public List<Product> findProductByPriceRange(BigDecimal min, BigDecimal max) {
+        return productRepository.findAllByPriceGreaterThanEqualAndPriceLessThanEqual(min, max);
     }
 
     public List<Product> findAllProductsByStockGreaterThanEqual(Integer stock) {
@@ -49,12 +54,33 @@ public class ProductService {
         return productRepository.findAllByAvailable(available);
     }
 
+    public List<Product> findAllProductsByBrandId(Long id) {
+        return productRepository.findAllByBrandId(id);
+    }
+
+    public List<Product> findAllProductsByCategoryId(Long id) {
+        return productRepository.findAllByCategoryId(id);
+    }
+
+    public List<Product> findAllProductsBySupplierId(Long id) {
+        return productRepository.findAllBySupplierId(id);
+    }
+
     //--------CUSTOMER--------//
     public ProductDisplayDto findValidProductByName(String name) {
         return modelMapper.map(productRepository.findByNameAndAvailableTrueAndStockGreaterThan(name, 0), ProductDisplayDto.class);
     }
+
+    public List<ProductDisplayDto> findAllValidProductsByNameContains(String namePart) {
+        List<ProductDisplay> productDisplayList = productRepository.findByNameContainsAndAvailableTrueAndStockGreaterThan(namePart, 0);
+
+        return productDisplayList.stream()
+                .map(productDisplay -> modelMapper.map(productDisplay, ProductDisplayDto.class))
+                .collect(Collectors.toList());
+    }
+
     public List<ProductDisplayDto> findAllValidProductsByCategoryName(String categoryName) {
-        List<ProductDisplay> productDisplayList = productRepository.findAllByAvailableTrueAndCategoryNameAndStockGreaterThan(categoryName , 0);
+        List<ProductDisplay> productDisplayList = productRepository.findAllByCategoryNameAndAvailableTrueAndStockGreaterThan(categoryName , 0);
 
         return productDisplayList.stream()
                 .map(productDisplay -> modelMapper.map(productDisplay, ProductDisplayDto.class))

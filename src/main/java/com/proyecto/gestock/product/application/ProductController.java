@@ -31,11 +31,6 @@ public class ProductController {
         return new ResponseEntity<>(productService.findProductById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/category/{id}")
-    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Long id) {
-        return new ResponseEntity<>(productService.findAllProductsByCategoryId(id), HttpStatus.OK);
-    }
-
     @GetMapping("/stock-greater")
     public ResponseEntity<List<Product>> getProductsByStockGreaterThanEqual(@RequestParam Integer stock) {
         return new ResponseEntity<>(productService.findAllProductsByStockGreaterThanEqual(stock), HttpStatus.OK);
@@ -43,7 +38,12 @@ public class ProductController {
 
     @GetMapping("/stock-less")
     public ResponseEntity<List<Product>> getProductsByStockLessThanEqual(@RequestParam Integer stock) {
-        return new ResponseEntity<>(productService.findAllProductsByStockGreaterThanEqual(stock), HttpStatus.OK);
+        return new ResponseEntity<>(productService.findAllProductsByStockLessThanEqual(stock), HttpStatus.OK);
+    }
+
+    @GetMapping("/category/{id}")
+    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Long id) {
+        return new ResponseEntity<>(productService.findAllProductsByCategoryId(id), HttpStatus.OK);
     }
 
     @GetMapping("/available")
