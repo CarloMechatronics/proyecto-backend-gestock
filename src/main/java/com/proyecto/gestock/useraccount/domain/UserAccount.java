@@ -40,6 +40,10 @@ public class UserAccount {
     @Column(nullable = false)
     private String role;
 
+    @NotNull
+    @Column(nullable = false)
+    private String urlProfilePhoto;
+
     @Override
     public int hashCode() {
         return Objects.hash(id);
