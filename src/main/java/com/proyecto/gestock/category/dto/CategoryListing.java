@@ -1,7 +1,6 @@
 package com.proyecto.gestock.category.dto;
 
-public interface CategoryDisplay {
+public interface CategoryListing {
     Long getId();
     String getName();
-    String getImageUrl();
 }

@@ -39,6 +39,13 @@ public class CategoryService {
                 .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
     }
 
+    public List<Product> findAllCategoryProductsById(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product with name " + id + " not found"));
+
+        return category.getProducts();
+    }
+
     //----POSTS----//
     @Transactional
     public Category saveCategory(Category category) {
@@ -62,6 +69,34 @@ public class CategoryService {
 
         category.getProducts().add(productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id " + productId + " not found")));
+
+        categoryRepository.save(category);
+
+        return category.getProducts();
+    }
+
+    //----DELETE----//
+    public List<Category> deleteCategoryById(Long id) {
+        if (!categoryRepository.existsById(id)) {
+            throw new ResourceNotFoundException("Category with id " + id + " not found");
+        }
+
+        categoryRepository.deleteById(id);
+
+        return categoryRepository.findAll();
+    }
+
+    public List<Product> deleteCategoryProductByIds(Long categoryId, Long productId) {
+        Category category = categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + categoryId + " not found"));
+
+        Product product = category.getProducts().stream()
+                .filter(p -> p.getId().equals(productId))
+                .findFirst()
+                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + productId + " not found in category with id " + categoryId));
+
+        productRepository.deleteById(productId);
+        category.getProducts().remove(product);
 
         categoryRepository.save(category);
 

@@ -42,7 +42,7 @@ public class BrandController {
 
     @GetMapping("/{id}/products")
     public ResponseEntity<List<Product>> getAllBrandProducts(@PathVariable Long id) {
-        return new ResponseEntity<>(brandService.findAllBrandProducts(id), HttpStatus.OK);
+        return new ResponseEntity<>(brandService.findAllBrandProductsById(id), HttpStatus.OK);
     }
 
     @PostMapping("/{id}")
@@ -68,7 +68,7 @@ public class BrandController {
 
     @DeleteMapping("/{brandId}/delete-product")
     public ResponseEntity<List<Product>> deleteBrandProduct(@PathVariable Long brandId, @RequestParam("product-id") Long productId) {
-        return new ResponseEntity<>(brandService.deleteBrandProduct(brandId, productId), HttpStatus.OK);
+        return new ResponseEntity<>(brandService.deleteBrandProductByIds(brandId, productId), HttpStatus.OK);
     }
 
 

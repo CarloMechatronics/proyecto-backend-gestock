@@ -48,7 +48,7 @@ public class BrandService {
         return brandRepository.findAllByActive(active);
     }
 
-    public List<Product> findAllBrandProducts(Long id) {
+    public List<Product> findAllBrandProductsById(Long id) {
         Brand brand = brandRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with name " + id + " not found"));
 
@@ -97,14 +97,14 @@ public class BrandService {
     }
 
     @Transactional
-    public List<Product> deleteBrandProduct(Long brandId, Long productId) {
+    public List<Product> deleteBrandProductByIds(Long brandId, Long productId) {
         Brand brand = brandRepository.findById(brandId)
                 .orElseThrow(() -> new ResourceNotFoundException("Brand with id " + brandId + " not found"));
 
         Product product = brand.getProducts().stream()
                 .filter(p -> p.getId().equals(productId))
                 .findFirst()
-                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + productId + " not found in brand " + brandId));
+                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + productId + " not found in brand with id " + brandId));
 
         productRepository.deleteById(productId);
         brand.getProducts().remove(product);

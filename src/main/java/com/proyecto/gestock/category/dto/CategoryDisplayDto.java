@@ -9,7 +9,8 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class CategoryListingDto {
+public class CategoryDisplayDto {
     private Long id;
     private String name;
+    private String imageUrl;
 }
