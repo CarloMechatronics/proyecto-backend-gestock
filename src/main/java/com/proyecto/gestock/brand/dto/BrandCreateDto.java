@@ -16,7 +16,7 @@ import java.util.List;
 @Setter
 public class BrandCreateDto {
     @NotBlank
-    @Size(max = 20)
+    @Size(min = 2, max = 20)
     private String name;
 
     private String logo;

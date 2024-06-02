@@ -1,8 +1,8 @@
-package com.proyecto.gestock.brand.dto;
+package com.proyecto.gestock.category.dto;
 
 import com.proyecto.gestock.constraints.nullablesizevalidator.NullableSize;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -13,13 +13,10 @@ import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
 @Setter
-public class BrandUpdateDto {
-    @NullableSize(min= 2, max = 20)
+@Getter
+public class CategoryUpdateDto {
+    @NullableSize(min = 2, max = 16)
     private String name;
-
-    private String logo;
-
-    private Boolean active;
+    private String imageUrl;
 }

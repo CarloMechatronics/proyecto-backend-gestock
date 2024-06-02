@@ -64,7 +64,8 @@ public class BrandService {
     //----PATCH----//
     @Transactional
     public Brand updateBrandById(Long id, BrandUpdateDto brandUpdateDto) {
-        Brand existingBrand = findBrandById(id);
+        Brand existingBrand = brandRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Brand with id " + id + " not found"));
         nonNullMapper.map(brandUpdateDto, existingBrand);
 
         return brandRepository.save(existingBrand);
