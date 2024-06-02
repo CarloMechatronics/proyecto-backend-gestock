@@ -1,10 +1,7 @@
 package com.proyecto.gestock.product.domain;
 
 import com.proyecto.gestock.exceptions.ResourceNotFoundException;
-import com.proyecto.gestock.product.dto.ProductDisplay;
-import com.proyecto.gestock.product.dto.ProductDisplayDto;
-import com.proyecto.gestock.product.dto.ProductInfo;
-import com.proyecto.gestock.product.dto.ProductInfoDto;
+import com.proyecto.gestock.product.dto.*;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,6 +63,15 @@ public class ProductService {
 
     public List<Product> findAllProductsBySupplierId(Long id) {
         return productRepository.findAllBySupplierId(id);
+    }
+
+    public Product updateProductById(Long id, ProductUpdateDto product) {
+        Product existingProduct = productRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
+
+
+
+        return productRepository.save(existingProduct);
     }
 
     //--------CUSTOMER--------//

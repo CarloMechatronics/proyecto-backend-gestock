@@ -19,13 +19,15 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     List<Product> findAllByStockGreaterThanEqual(Integer stock);
     List<Product> findAllByStockLessThanEqual(Integer stock);
     List<Product> findAllByAvailable(Boolean available);
-    List<Product> findAllByBrandId(Long id);
-    List<Product> findAllByCategoryId(Long id);
-    List<Product> findAllBySupplierId(Long id);
 
     //--------CUSTOMER--------//
     Optional<ProductInfo> findByNameAndAvailableTrueAndStockGreaterThan(String name, Integer stock);
     List<ProductDisplay> findByNameContainsAndAvailableTrueAndStockGreaterThan(String name, Integer stock);
     List<ProductDisplay> findAllByPriceGreaterThanEqualAndPriceLessThanEqualAndAvailableTrueAndStockGreaterThan(BigDecimal min, BigDecimal max, Integer stock);
+
+    //Evaluar si se quedan
+    List<Product> findAllByBrandId(Long id);
+    List<Product> findAllByCategoryId(Long id);
+    List<Product> findAllBySupplierId(Long id);
     List<ProductDisplay> findAllByCategoryNameAndAvailableTrueAndStockGreaterThan(String categoryName, Integer stock);
 }
