@@ -5,7 +5,9 @@ import com.proyecto.gestock.product.dto.*;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -16,14 +18,17 @@ import java.util.stream.Collectors;
 public class ProductService {
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
+    private final ModelMapper nonNullMapper;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, ModelMapper modelMapper) {
+    public ProductService(ProductRepository productRepository, ModelMapper modelMapper, @Qualifier("nonNullMapper") ModelMapper nonNullMapper) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
+        this.nonNullMapper = nonNullMapper;
     }
 
-    //----ADMIN----//
+    //-------ADMIN--------//
+    //----GET----//
     public List<Product> findAllProducts() {
         return productRepository.findAll();
     }
@@ -65,11 +70,13 @@ public class ProductService {
         return productRepository.findAllBySupplierId(id);
     }
 
+    //----PATCH----//
+    @Transactional
     public Product updateProductById(Long id, ProductUpdateDto product) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
 
-
+        nonNullMapper.map(product, existingProduct);
 
         return productRepository.save(existingProduct);
     }

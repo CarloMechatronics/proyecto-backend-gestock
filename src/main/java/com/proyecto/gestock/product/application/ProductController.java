@@ -5,6 +5,7 @@ import com.proyecto.gestock.product.domain.ProductService;
 import com.proyecto.gestock.product.dto.ProductDisplay;
 import com.proyecto.gestock.product.dto.ProductDisplayDto;
 import com.proyecto.gestock.product.dto.ProductInfoDto;
+import com.proyecto.gestock.product.dto.ProductUpdateDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -64,6 +65,11 @@ public class ProductController {
     @GetMapping("/category-id/{id}")
     public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Long id) {
         return new ResponseEntity<>(productService.findAllProductsByCategoryId(id), HttpStatus.OK);
+    }
+
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody ProductUpdateDto product) {
+        return new ResponseEntity<>(productService.updateProductById(id, product), HttpStatus.OK);
     }
 
     //--------CUSTOMER--------//
