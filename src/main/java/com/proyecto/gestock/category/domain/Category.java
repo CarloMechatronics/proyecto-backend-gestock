@@ -32,7 +32,7 @@ public class Category {
 
     @NotEmpty
     @Column(nullable = false)
-    private String imageUrl; // TODO: Agregar una imagen por default
+    private String imageUrl = "https://cdn4.iconfinder.com/data/icons/core-ui-outlined/32/outlined_placeholder-256.png";
 
     @OneToMany(mappedBy = "category")
     private List<Product> products = new ArrayList<>();
