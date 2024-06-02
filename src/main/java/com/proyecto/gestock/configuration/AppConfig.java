@@ -10,4 +10,12 @@ public class AppConfig {
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }
+
+    // Bean para mappear solo atributos no nulos
+    @Bean
+    public ModelMapper nonNullMapper() {
+        ModelMapper nonNullMapper = new ModelMapper();
+        nonNullMapper.getConfiguration().setSkipNullEnabled(true);
+        return nonNullMapper;
+    }
 }
