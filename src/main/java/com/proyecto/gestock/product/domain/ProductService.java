@@ -81,6 +81,15 @@ public class ProductService {
         return productRepository.save(existingProduct);
     }
 
+    @Transactional
+    public void deleteProductById(Long id) {
+        if (!productRepository.existsById(id))
+            throw new ResourceNotFoundException("Product with id " + id + " not found");
+
+        productRepository.deleteById(id);
+    }
+
+
     //--------CUSTOMER--------//
     public ProductInfoDto findValidProductByName(String name) {
         ProductInfo productInfo = productRepository.findByNameAndAvailableTrueAndStockGreaterThan(name, 0)
