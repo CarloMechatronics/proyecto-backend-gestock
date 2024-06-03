@@ -45,12 +45,12 @@ public class CustomerController {
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCustomer);
     }
 
-    @PostMapping("/{customerId}/orders")
-    public ResponseEntity<PurchaseOrder> createPurchaseOrder(@PathVariable Long customerId,
-                                                             @RequestBody List<Long> productIds) {
-        PurchaseOrder purchaseOrder = customerService.createPurchaseOrder(customerId, productIds);
-        return new ResponseEntity<>(purchaseOrder, HttpStatus.CREATED);
-    }
+//    @PostMapping("/{customerId}/orders")
+//    public ResponseEntity<PurchaseOrder> createPurchaseOrder(@PathVariable Long customerId,
+//                                                             @RequestBody List<Long> productIds) {
+//        PurchaseOrder purchaseOrder = customerService.createPurchaseOrder(customerId, productIds);
+//        return new ResponseEntity<>(purchaseOrder, HttpStatus.CREATED);
+//    }
 
     @GetMapping("/orders/{id}")
     public ResponseEntity<PurchaseOrder> getPurchaseOrder(@PathVariable Long id) {
@@ -58,23 +58,23 @@ public class CustomerController {
         return ResponseEntity.ok(purchaseOrder);
     }
 
-    @PutMapping("/orders/{id}")
-    public ResponseEntity<PurchaseOrder> updatePurchaseOrder(@PathVariable Long id, @RequestBody List<Long> productIds) {
-        PurchaseOrder updatedPurchaseOrder = customerService.updatePurchaseOrder(id, productIds);
-        return ResponseEntity.ok(updatedPurchaseOrder);
-    }
-
-    @GetMapping("/orders/{id}/totalPrice")
-    public ResponseEntity<BigDecimal> getTotalPrice(@PathVariable Long id) {
-        BigDecimal totalPrice = customerService.getTotalPrice(id);
-        return ResponseEntity.ok(totalPrice);
-    }
-
-    @PutMapping("/orders/{orderId}/products/{productId}")
-    public ResponseEntity<PurchaseOrder> updateOrderItemQuantity(@PathVariable Long orderId, @PathVariable Long productId, @RequestParam Integer quantity) {
-        PurchaseOrder updatedPurchaseOrder = customerService.updateOrderItemQuantity(orderId, productId, quantity);
-        return ResponseEntity.ok(updatedPurchaseOrder);
-    }
+//    @PutMapping("/orders/{id}")
+//    public ResponseEntity<PurchaseOrder> updatePurchaseOrder(@PathVariable Long id, @RequestBody List<Long> productIds) {
+//        PurchaseOrder updatedPurchaseOrder = customerService.updatePurchaseOrder(id, productIds);
+//        return ResponseEntity.ok(updatedPurchaseOrder);
+//    }
+//
+//    @GetMapping("/orders/{id}/totalPrice")
+//    public ResponseEntity<BigDecimal> getTotalPrice(@PathVariable Long id) {
+//        BigDecimal totalPrice = customerService.getTotalPrice(id);
+//        return ResponseEntity.ok(totalPrice);
+//    }
+//
+//    @PutMapping("/orders/{orderId}/products/{productId}")
+//    public ResponseEntity<PurchaseOrder> updateOrderItemQuantity(@PathVariable Long orderId, @PathVariable Long productId, @RequestParam Integer quantity) {
+//        PurchaseOrder updatedPurchaseOrder = customerService.updateOrderItemQuantity(orderId, productId, quantity);
+//        return ResponseEntity.ok(updatedPurchaseOrder);
+//    }
 
 
     @DeleteMapping("/orders/{id}")

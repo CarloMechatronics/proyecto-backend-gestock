@@ -1,5 +1,6 @@
 package com.proyecto.gestock.purchaseorder.domain;
 
+import com.proyecto.gestock.customer.domain.Customer;
 import com.proyecto.gestock.shoppingcart.domain.ShoppingCart;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
@@ -33,6 +34,10 @@ public class PurchaseOrder {
 
     @OneToOne
     private ShoppingCart shoppingCart;
+
+    @ManyToOne
+    @JoinColumn(name = "customer_id", nullable = false)
+    private Customer customer;
 
     @Override
     public int hashCode() {

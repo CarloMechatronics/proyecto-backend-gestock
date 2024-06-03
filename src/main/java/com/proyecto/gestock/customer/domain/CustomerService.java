@@ -56,72 +56,72 @@ public class CustomerService {
         customerRepository.delete(customer);
     }
 
-    public PurchaseOrder createPurchaseOrder(Long customerId, List<Long> productIds) {
-        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-        List<Product> products = productRepository.findAllById(productIds);
-
-        PurchaseOrder purchaseOrder = new PurchaseOrder();
-        purchaseOrder.setCustomer(customer);
-
-        List<OrderItem> orderItems = products.stream().map(product -> {
-            OrderItem orderItem = new OrderItem();
-            orderItem.setProduct(product);
-            orderItem.setPrice(product.getPrice());
-            orderItem.setQuantity(1); // Default quantity
-            orderItem.setPurchaseOrder(purchaseOrder);
-            return orderItem;
-        }).collect(Collectors.toList());
-
-        purchaseOrder.setOrderItems(orderItems);
-
-        return purchaseOrderRepository.save(purchaseOrder);
-    }
+//    public PurchaseOrder createPurchaseOrder(Long customerId, List<Long> productIds) {
+//        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+//        List<Product> products = productRepository.findAllById(productIds);
+//
+//        PurchaseOrder purchaseOrder = new PurchaseOrder();
+//        purchaseOrder.se(customer);
+//
+//        List<OrderItem> orderItems = products.stream().map(product -> {
+//            OrderItem orderItem = new OrderItem();
+//            orderItem.setProduct(product);
+//            orderItem.setPrice(product.getPrice());
+//            orderItem.setQuantity(1); // Default quantity
+//            orderItem.setPurchaseOrder(purchaseOrder);
+//            return orderItem;
+//        }).collect(Collectors.toList());
+//
+//        purchaseOrder.setOrderItems(orderItems);
+//
+//        return purchaseOrderRepository.save(purchaseOrder);
+//    }
 
     public PurchaseOrder getPurchaseOrder(Long id) {
         return purchaseOrderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
     }
 
-    public PurchaseOrder updatePurchaseOrder(Long id, List<Long> productIds) {
-        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
-        List<Product> products = productRepository.findAllById(productIds);
+//    public PurchaseOrder updatePurchaseOrder(Long id, List<Long> productIds) {
+//        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
+//        List<Product> products = productRepository.findAllById(productIds);
+//
+//        List<OrderItem> orderItems = products.stream().map(product -> {
+//            OrderItem orderItem = new OrderItem();
+//            orderItem.setProduct(product);
+//            orderItem.setPrice(product.getPrice());
+//            orderItem.setQuantity(1);
+//            orderItem.setPurchaseOrder(purchaseOrder);
+//            return orderItem;
+//        }).collect(Collectors.toList());
+//
+//        purchaseOrder.setOrderItems(orderItems);
+//        return purchaseOrderRepository.save(purchaseOrder);
+//    }
 
-        List<OrderItem> orderItems = products.stream().map(product -> {
-            OrderItem orderItem = new OrderItem();
-            orderItem.setProduct(product);
-            orderItem.setPrice(product.getPrice());
-            orderItem.setQuantity(1);
-            orderItem.setPurchaseOrder(purchaseOrder);
-            return orderItem;
-        }).collect(Collectors.toList());
-
-        purchaseOrder.setOrderItems(orderItems);
-        return purchaseOrderRepository.save(purchaseOrder);
-    }
-
-    public BigDecimal getTotalPrice(Long purchaseOrderId) {
-        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
-
-        return purchaseOrder.getOrderItems().stream()
-                .map(orderItem -> orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())))
-                .reduce(BigDecimal.ZERO, BigDecimal::add);
-    }
+//    public BigDecimal getTotalPrice(Long purchaseOrderId) {
+//        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
+//
+//        return purchaseOrder.getOrderItems().stream()
+//                .map(orderItem -> orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())))
+//                .reduce(BigDecimal.ZERO, BigDecimal::add);
+//    }
 
 
-    public PurchaseOrder updateOrderItemQuantity(Long orderId, Long productId, Integer quantity) {
-        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
-
-        Optional<OrderItem> orderItemOptional = purchaseOrder.getOrderItems().stream()
-                .filter(orderItem -> orderItem.getProduct().getId().equals(productId))
-                .findFirst();
-        if (orderItemOptional.isPresent()) {
-            OrderItem orderItem = orderItemOptional.get();
-            orderItem.setQuantity(quantity);
-            purchaseOrderRepository.save(purchaseOrder);
-        } else {
-            throw new ResourceNotFoundException("Product not found in purchase order");
-        }
-        return purchaseOrder;
-    }
+//    public PurchaseOrder updateOrderItemQuantity(Long orderId, Long productId, Integer quantity) {
+//        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
+//
+//        Optional<OrderItem> orderItemOptional = purchaseOrder.getOrderItems().stream()
+//                .filter(orderItem -> orderItem.getProduct().getId().equals(productId))
+//                .findFirst();
+//        if (orderItemOptional.isPresent()) {
+//            OrderItem orderItem = orderItemOptional.get();
+//            orderItem.setQuantity(quantity);
+//            purchaseOrderRepository.save(purchaseOrder);
+//        } else {
+//            throw new ResourceNotFoundException("Product not found in purchase order");
+//        }
+//        return purchaseOrder;
+//    }
 
     public void deletePurchaseOrder(Long id) {
         PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
