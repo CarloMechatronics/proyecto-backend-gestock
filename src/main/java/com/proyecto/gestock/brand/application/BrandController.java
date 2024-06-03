@@ -72,7 +72,7 @@ public class BrandController {
     }
 
 
-    //--------CUSTOMER--------//
+    //--------ANYONE--------//
     @GetMapping
     public ResponseEntity<List<BrandDisplayDto>> getAllActiveBrandsDisplay() {
         return new ResponseEntity<>(brandService.findAllActiveBrands(), HttpStatus.OK);

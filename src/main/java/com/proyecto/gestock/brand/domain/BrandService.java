@@ -115,7 +115,7 @@ public class BrandService {
     }
 
 
-    //--------CUSTOMER--------//
+    //--------ANYONE--------//
     public List<BrandDisplayDto> findAllActiveBrands() {
         List<BrandDisplay> brandDisplayList = brandRepository.findAllByActiveTrue();
         return brandDisplayList.stream()

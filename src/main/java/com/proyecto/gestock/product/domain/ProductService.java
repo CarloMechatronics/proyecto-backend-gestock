@@ -115,7 +115,7 @@ public class ProductService {
     }
 
 
-    //--------CUSTOMER--------//
+    //--------ANYONE--------//
     public ProductInfoDto findValidProductByName(String name) {
         ProductInfo productInfo = productRepository.findByNameAndStockGreaterThanEqual(name, 0)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with name '" + name + "' not found"));

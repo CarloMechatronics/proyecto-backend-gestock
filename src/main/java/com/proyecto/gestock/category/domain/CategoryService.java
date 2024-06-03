@@ -53,7 +53,7 @@ public class CategoryService {
         return category.getProducts();
     }
 
-    //----POSTS----//
+    //----POST----//
     @Transactional
     public Category saveCategory(CategoryCreateDto categoryCreateDto) {
         return categoryRepository.save(nonNullMapper.map(categoryCreateDto, Category.class));
@@ -113,7 +113,7 @@ public class CategoryService {
     }
 
 
-    //--------CUSTOMER--------//
+    //--------ANYONE--------//
     public List<CategoryDisplayDto> findAllCategoriesByIdNotNull() {
         List<CategoryDisplay> categoryDisplayList = categoryRepository.findAllByIdNotNull();
 

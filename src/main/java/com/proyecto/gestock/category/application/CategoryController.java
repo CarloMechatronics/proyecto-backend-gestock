@@ -67,7 +67,7 @@ public class CategoryController {
     }
 
 
-    //--------CUSTOMER--------//
+    //--------ANYONE--------//
     @GetMapping
     public ResponseEntity<List<CategoryDisplayDto>> getAllCategoriesDisplayDto() {
         return new ResponseEntity<>(categoryService.findAllCategoriesByIdNotNull(), HttpStatus.OK);

@@ -13,7 +13,8 @@ import java.util.Optional;
 public interface BrandRepository extends JpaRepository<Brand, Long> {
     //--------ADMIN--------//
     List<Brand> findAllByActive(Boolean active);
-    //--------CUSTOMER--------//
+
+    //--------ANYONE--------//
     List<BrandDisplay> findAllByActiveTrue();
     List<BrandDisplay> findAllByNameContainsAndActiveTrue(String namePart);
     // When user clicks a brand name or logo and then retrieve all products in a service method

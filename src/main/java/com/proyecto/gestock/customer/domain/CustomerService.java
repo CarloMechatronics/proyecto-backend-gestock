@@ -3,29 +3,22 @@ package com.proyecto.gestock.customer.domain;
 import com.proyecto.gestock.customer.dto.CustomerDTO;
 import com.proyecto.gestock.customer.infrastructure.CustomerRepository;
 import com.proyecto.gestock.exceptions.ResourceNotFoundException;
-import com.proyecto.gestock.orderitem.domain.OrderItem;
-import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
 import com.proyecto.gestock.purchaseorder.domain.PurchaseOrder;
-import com.proyecto.gestock.purchaseorder.infrastructure.OrderRepository;
+import com.proyecto.gestock.purchaseorder.infrastructure.PurchaseOrderRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomerService {
     private final CustomerRepository customerRepository;
     private final ProductRepository productRepository;
-    private final OrderRepository purchaseOrderRepository;
+    private final PurchaseOrderRepository purchaseOrderRepository;
     private final ModelMapper modelMapper;
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository,ProductRepository productRepository, OrderRepository purchaseOrderRepository ,ModelMapper modelMapper) {
+    public CustomerService(CustomerRepository customerRepository, ProductRepository productRepository, PurchaseOrderRepository purchaseOrderRepository , ModelMapper modelMapper) {
         this.customerRepository = customerRepository;
         this.productRepository = productRepository;
         this.purchaseOrderRepository = purchaseOrderRepository;

@@ -62,7 +62,8 @@ public class ProductController {
         return new ResponseEntity<>(productService.updateProductById(id, productUpdateDto), HttpStatus.OK);
     }
 
-    //--------CUSTOMER--------//
+
+    //--------ANYONE--------//
     @GetMapping("/{name}")
     public ResponseEntity<ProductInfoDto> getValidProductByName(@PathVariable String name) {
         return new ResponseEntity<>(productService.findValidProductByName(name), HttpStatus.OK);
