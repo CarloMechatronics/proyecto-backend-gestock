@@ -58,21 +58,11 @@ public class ProductService {
         return productRepository.findAllByAvailable(available);
     }
 
-    public List<Product> findAllProductsByBrandId(Long id) {
-        return productRepository.findAllByBrandId(id);
-    }
-
-    public List<Product> findAllProductsByCategoryId(Long id) {
-        return productRepository.findAllByCategoryId(id);
-    }
-
-    public List<Product> findAllProductsBySupplierId(Long id) {
-        return productRepository.findAllBySupplierId(id);
-    }
+    //----POST----//
 
     //----PATCH----//
     @Transactional
-    public Product updateProductById(Long id, ProductUpdateDto product) {
+    public Product updateProductById(Long id, ProductRequestDto product) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
 
@@ -89,6 +79,8 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
+    //----DELETE----//
+
 
     //--------CUSTOMER--------//
     public ProductInfoDto findValidProductByName(String name) {
@@ -100,7 +92,7 @@ public class ProductService {
 
     public List<ProductDisplayDto> findAllValidProductsByNameContains(String namePart) {
         List<ProductDisplay> productDisplayList = productRepository
-                .findByNameContainsAndAvailableTrueAndStockGreaterThan(namePart, 0);
+                .findAllByNameContainsAndAvailableTrueAndStockGreaterThan(namePart, 0);
 
         return productDisplayList.stream()
                 .map(productDisplay -> modelMapper.map(productDisplay, ProductDisplayDto.class))
@@ -115,79 +107,4 @@ public class ProductService {
                 .map(productDisplay -> modelMapper.map(productDisplay, ProductDisplayDto.class))
                 .collect(Collectors.toList());
     }
-
-    public List<ProductDisplayDto> findAllValidProductsByCategoryName(String categoryName) {
-        List<ProductDisplay> productDisplayList = productRepository
-                .findAllByCategoryNameAndAvailableTrueAndStockGreaterThan(categoryName , 0);
-
-        return productDisplayList.stream()
-                .map(productDisplay -> modelMapper.map(productDisplay, ProductDisplayDto.class))
-                .collect(Collectors.toList());
-    }
-
-//    public List<ProductDisplayDto> getAllProducts(){
-//        List<Product> products = productRepository.findAll();
-//        return products.stream()
-//                .map(product -> modelMapper.map(product, ProductDisplayDto.class))
-//                .collect(Collectors.toList());
-//    }
-//
-//
-//    public ProductUpdateDto getProductById(Long id){
-//        Product product = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product not found with that id"));
-//        return modelMapper.map(product, ProductUpdateDto.class);
-//    }
-//
-//
-//    public Product save(Product product) {
-//        return productRepository.save(product);
-//    }
-//
-//
-//    public Product update(Long id, Product product) {
-//        return productRepository.findById(id)
-//                .map(existing -> {
-//                    existing.setName(product.getName());
-//                    existing.setDescription(product.getDescription());
-//                    existing.setPrice(product.getPrice());
-//                    existing.setStock(product.getStock());
-//                    existing.setCategory(product.getCategory());
-//                    return productRepository.save(existing);
-//                }).orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
-//    }
-//
-//
-//    public void deleteById(Long id) {
-//        productRepository.findById(id).map(product -> {
-//            productRepository.deleteById(id);
-//            return product;
-//        }).orElseThrow(() -> new ResourceNotFoundException("Product not found with id: " + id));
-//    }
-//
-//    public boolean existsById(Long id) {
-//        return productRepository.existsById(id);
-//    }
-//
-//    public ProductUpdateDto createProduct(ProductUpdateDto productUpdateDto){
-//        Product product = modelMapper.map(productUpdateDto, Product.class);
-//        product = productRepository.save(product);
-//        return modelMapper.map(product, ProductUpdateDto.class);
-//    }
-//
-//    public ProductUpdateDto updateProduct(Long id, ProductUpdateDto productUpdateDto){
-//        if(!productRepository.existsById(id)){
-//            throw new ResourceNotFoundException("Product not found with that id");
-//        }
-//        Product product = modelMapper.map(productUpdateDto, Product.class);
-//        product.setId(id);
-//        product = productRepository.save(product);
-//        return modelMapper.map(product, ProductUpdateDto.class);
-//    }
-//
-//    public void deleteProduct(Long id){
-//        if(!productRepository.existsById(id)){
-//            throw new ResourceNotFoundException("Product not found with that id");
-//        }
-//        productRepository.deleteById(id);
-//    }
 }

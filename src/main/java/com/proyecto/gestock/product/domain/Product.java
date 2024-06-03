@@ -27,7 +27,7 @@ public class Product {
     private Long id;
 
     @NotBlank
-    @Size(min = 6, max = 60)
+    @Size(min = 2, max = 60)
     @Column(nullable = false)
     private String name;
 

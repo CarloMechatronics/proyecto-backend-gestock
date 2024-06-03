@@ -18,23 +18,22 @@ public class SupplierController {
         this.supplierService = supplierService;
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<SupplierDTO> getSupplierById(@PathVariable Long id) {
-        return ResponseEntity.ok(supplierService.getSupplierById(id));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<SupplierDTO>> getAllSuppliers() {
-        List<SupplierDTO> supplierDTOs = supplierService.getAllSuppliers();
-        return ResponseEntity.ok(supplierDTOs);
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity<SupplierDTO> deleteSupplierById(@PathVariable Long id) {
-        supplierService.deleteSupplierById(id);
-        return ResponseEntity.ok(supplierService.getSupplierById(id));
-    }
 
 
-
+//    @GetMapping("/{id}")
+//    public ResponseEntity<SupplierDTO> getSupplierById(@PathVariable Long id) {
+//        return ResponseEntity.ok(supplierService.getSupplierById(id));
+//    }
+//
+//    @GetMapping
+//    public ResponseEntity<List<SupplierDTO>> getAllSuppliers() {
+//        List<SupplierDTO> supplierDTOs = supplierService.getAllSuppliers();
+//        return ResponseEntity.ok(supplierDTOs);
+//    }
+//
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<SupplierDTO> deleteSupplierById(@PathVariable Long id) {
+//        supplierService.deleteSupplierById(id);
+//        return ResponseEntity.ok(supplierService.getSupplierById(id));
+//    }
 }

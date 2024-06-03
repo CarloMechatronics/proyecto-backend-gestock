@@ -12,6 +12,6 @@ import java.util.Optional;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
     List<CategoryDisplay> findAllByIdNotNull();
     List<CategoryDisplay> findAllByNameContains(String namePart);
-    // When user clicks a category name or logo and then retrieve all products in service
+    // When user clicks a category name or logo and then retrieve all products in a service method
     Optional<Category> findByName(String name);
 }

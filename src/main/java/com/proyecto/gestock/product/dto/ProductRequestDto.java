@@ -1,6 +1,8 @@
 package com.proyecto.gestock.product.dto;
 
+import com.proyecto.gestock.brand.domain.Brand;
 import com.proyecto.gestock.category.domain.Category;
+import com.proyecto.gestock.constraints.nullablesizevalidator.NullableSize;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,11 +14,16 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ProductUpdateDto {
+public class ProductRequestDto {
+    @NullableSize(min = 2, max = 60)
     private String name;
+    @NullableSize(max = 255)
     private String summary;
+    @NullableSize(max = 1020)
     private String description;
     private BigDecimal price;
+    private Integer stock;
     private Boolean available;
+    private Brand brand;
     private Category category;
 }

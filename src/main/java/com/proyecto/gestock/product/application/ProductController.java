@@ -2,10 +2,9 @@ package com.proyecto.gestock.product.application;
 
 import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.product.domain.ProductService;
-import com.proyecto.gestock.product.dto.ProductDisplay;
 import com.proyecto.gestock.product.dto.ProductDisplayDto;
 import com.proyecto.gestock.product.dto.ProductInfoDto;
-import com.proyecto.gestock.product.dto.ProductUpdateDto;
+import com.proyecto.gestock.product.dto.ProductRequestDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,48 +26,43 @@ public class ProductController {
     }
 
     //--------ADMIN--------//
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<Product>> getAllProducts() {
         return new ResponseEntity<>(productService.findAllProducts(), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/all/{id}")
     public ResponseEntity<Product> getProductById(@PathVariable Long id) {
         return new ResponseEntity<>(productService.findProductById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/name-has")
+    @GetMapping("/all/name")
     public ResponseEntity<List<Product>> getProductByNameContains(@RequestParam("name") String namePart) {
         return new ResponseEntity<>(productService.findAllProductsByNameContains(namePart), HttpStatus.OK);
     }
 
-    @GetMapping("/price-range")
+    @GetMapping("/all/price-range")
     public ResponseEntity<List<Product>> getProductByPriceRange(@RequestParam BigDecimal min, @RequestParam BigDecimal max) {
         return new ResponseEntity<>(productService.findAllProductsByPriceRange(min, max), HttpStatus.OK);
     }
 
-    @GetMapping("/stock-greater-than")
+    @GetMapping("/all/stock-greater-than")
     public ResponseEntity<List<Product>> getProductsByStockGreaterThanEqual(@RequestParam Integer stock) {
         return new ResponseEntity<>(productService.findAllProductsByStockGreaterThanEqual(stock), HttpStatus.OK);
     }
 
-    @GetMapping("/stock-less-than")
+    @GetMapping("/all/stock-less-than")
     public ResponseEntity<List<Product>> getProductsByStockLessThanEqual(@RequestParam Integer stock) {
         return new ResponseEntity<>(productService.findAllProductsByStockLessThanEqual(stock), HttpStatus.OK);
     }
 
-    @GetMapping("/available")
+    @GetMapping("/all/available")
     public ResponseEntity<List<Product>> getProductsByAvailable(@RequestParam Boolean available) {
         return new ResponseEntity<>(productService.findAllProductsByAvailable(available), HttpStatus.OK);
     }
 
-    @GetMapping("/category-id/{id}")
-    public ResponseEntity<List<Product>> getProductsByCategory(@PathVariable Long id) {
-        return new ResponseEntity<>(productService.findAllProductsByCategoryId(id), HttpStatus.OK);
-    }
-
     @PatchMapping("/update/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody ProductUpdateDto product) {
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody ProductRequestDto product) {
         return new ResponseEntity<>(productService.updateProductById(id, product), HttpStatus.OK);
     }
 
@@ -87,27 +81,4 @@ public class ProductController {
     public ResponseEntity<List<ProductDisplayDto>> getAllValidProductsByPriceRange(@RequestParam BigDecimal min, @RequestParam BigDecimal max) {
         return new ResponseEntity<>(productService.findAllValidProductByPriceRange(min, max), HttpStatus.OK);
     }
-
-    @GetMapping("/category-name/{name}")
-    public ResponseEntity<List<ProductDisplayDto>> getValidProductsByCategoryName(@PathVariable String name) {
-        return new ResponseEntity<>(productService.findAllValidProductsByCategoryName(name), HttpStatus.OK);
-    }
-
-//    @PostMapping
-//    public ResponseEntity<ProductUpdateDto> createProduct(@RequestBody ProductUpdateDto productUpdateDto) {
-//        ProductUpdateDto createdProduct = productService.createProduct(productUpdateDto);
-//        return ResponseEntity.status(HttpStatus.CREATED).body(createdProduct);
-//    }
-//
-//    @PutMapping("/{id}")
-//    public ResponseEntity<ProductUpdateDto> updateProduct(@PathVariable Long id, @RequestBody ProductUpdateDto productUpdateDto) {
-//        ProductUpdateDto updatedProduct = productService.updateProduct(id, productUpdateDto);
-//        return new ResponseEntity<>(updatedProduct, HttpStatus.OK);
-//    }
-//
-//    @DeleteMapping("/{id}")
-//    public ResponseEntity<Product> deleteProduct(@PathVariable Long id) {
-//        productService.deleteById(id);
-//        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//    }
 }

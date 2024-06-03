@@ -22,25 +22,29 @@ public class SupplierService {
         this.modelMapper = modelMapper;
     }
 
-    public SupplierDTO getSupplierById(Long id) {
-        Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Didn´t found"));
-        return modelMapper.map(supplier, SupplierDTO.class);
+    public List<Supplier> findAllSuppliers() {
+        return supplierRepository.findAll();
     }
 
-    public List<SupplierDTO> getAllSuppliers() {
-        List<Supplier> suppliers = supplierRepository.findAll();
-        if (suppliers.isEmpty()) {
-            return new ArrayList<>();
-        }
-        List<SupplierDTO> dtos = suppliers.stream()
-                .map(supplier -> modelMapper.map(supplier, SupplierDTO.class))
-                .collect(Collectors.toList());
-        return dtos;
-    }
-
-
-    public void deleteSupplierById(Long id) {
-        Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Didn't found"));
-        supplierRepository.deleteById(id);
-    }
+//    public SupplierDTO getSupplierById(Long id) {
+//        Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Didn´t found"));
+//        return modelMapper.map(supplier, SupplierDTO.class);
+//    }
+//
+//    public List<SupplierDTO> getAllSuppliers() {
+//        List<Supplier> suppliers = supplierRepository.findAll();
+//        if (suppliers.isEmpty()) {
+//            return new ArrayList<>();
+//        }
+//        List<SupplierDTO> dtos = suppliers.stream()
+//                .map(supplier -> modelMapper.map(supplier, SupplierDTO.class))
+//                .collect(Collectors.toList());
+//        return dtos;
+//    }
+//
+//
+//    public void deleteSupplierById(Long id) {
+//        Supplier supplier = supplierRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Didn't found"));
+//        supplierRepository.deleteById(id);
+//    }
 }

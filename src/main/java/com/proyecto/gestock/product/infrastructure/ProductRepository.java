@@ -2,7 +2,6 @@ package com.proyecto.gestock.product.infrastructure;
 
 import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.product.dto.ProductDisplay;
-import com.proyecto.gestock.product.dto.ProductDisplayDto;
 import com.proyecto.gestock.product.dto.ProductInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -22,12 +21,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
     //--------CUSTOMER--------//
     Optional<ProductInfo> findByNameAndAvailableTrueAndStockGreaterThan(String name, Integer stock);
-    List<ProductDisplay> findByNameContainsAndAvailableTrueAndStockGreaterThan(String name, Integer stock);
+    List<ProductDisplay> findAllByNameContainsAndAvailableTrueAndStockGreaterThan(String name, Integer stock);
     List<ProductDisplay> findAllByPriceGreaterThanEqualAndPriceLessThanEqualAndAvailableTrueAndStockGreaterThan(BigDecimal min, BigDecimal max, Integer stock);
-
-    //Evaluar si se quedan
-    List<Product> findAllByBrandId(Long id);
-    List<Product> findAllByCategoryId(Long id);
-    List<Product> findAllBySupplierId(Long id);
-    List<ProductDisplay> findAllByCategoryNameAndAvailableTrueAndStockGreaterThan(String categoryName, Integer stock);
 }

@@ -16,6 +16,6 @@ public interface BrandRepository extends JpaRepository<Brand, Long> {
     //--------CUSTOMER--------//
     List<BrandDisplay> findAllByActiveTrue();
     List<BrandDisplay> findAllByNameContainsAndActiveTrue(String namePart);
-    // When user clicks a brand name or logo and then retrieve all products in service
+    // When user clicks a brand name or logo and then retrieve all products in a service method
     Optional<Brand> findByNameAndActiveTrue(String name);
 }
