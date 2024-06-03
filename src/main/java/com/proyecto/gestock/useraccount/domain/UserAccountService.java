@@ -30,7 +30,9 @@ public class UserAccountService {
 
 
     public UserAccountDTO getUserAccountById(Long id) {
-        UserAccount user = userAccountRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        UserAccount user = userAccountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         return modelMapper.map(user, UserAccountDTO.class);
     }
 
@@ -46,7 +48,8 @@ public class UserAccountService {
     }
 
     public UserAccountDTO updateUserAccount(Long id, UserAccount userAccount) {
-        UserAccount existingUser = userAccountRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        UserAccount existingUser = userAccountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
         existingUser.setUsername(userAccount.getUsername());
         existingUser.setEmail(userAccount.getEmail());
         existingUser.setPassword(userAccount.getPassword());
@@ -55,7 +58,9 @@ public class UserAccountService {
     }
 
     public void deleteUserAccount(Long id) {
-        UserAccount user = userAccountRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        UserAccount user = userAccountRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         userAccountRepository.delete(user);
     }
 }

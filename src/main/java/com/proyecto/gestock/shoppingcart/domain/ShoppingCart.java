@@ -36,6 +36,7 @@ public class ShoppingCart {
     @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
+    @NotNull
     @OneToMany(mappedBy = "shoppingCart", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
 

@@ -4,7 +4,6 @@ import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.product.domain.ProductService;
 import com.proyecto.gestock.product.dto.ProductDisplayDto;
 import com.proyecto.gestock.product.dto.ProductInfoDto;
-import com.proyecto.gestock.product.dto.ProductCreateDto;
 import com.proyecto.gestock.product.dto.ProductUpdateDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +16,7 @@ import java.util.List;
 
 @Valid
 @RestController
-@RequestMapping("/product")
+@RequestMapping("/products")
 public class ProductController {
     private final ProductService productService;
 

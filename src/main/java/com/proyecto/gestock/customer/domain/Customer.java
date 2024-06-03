@@ -24,21 +24,27 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
+    @NotBlank
     @Size(min = 5, max = 80)
     @Column(nullable = false)
     private String name;
 
-    @NotNull
+    @NotBlank
     @Email
+    @Size(min = 8, max = 64)
     @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$", message = "Invalid email format")
-    @Column(nullable = false, unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
+
+    @NotBlank
+    @Size(min = 8, max = 20)
+    @Column(nullable = false)
+    private String password;
 
     @NotNull
     @PastOrPresent
     @Column(nullable = false)
-    private LocalDate registrationDate;
+    private LocalDate registrationDate = LocalDate.now();
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShoppingCart> shoppingCarts = new ArrayList<>();
