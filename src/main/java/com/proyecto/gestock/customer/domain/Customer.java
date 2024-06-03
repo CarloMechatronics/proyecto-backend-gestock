@@ -1,11 +1,9 @@
 package com.proyecto.gestock.customer.domain;
 
 import com.proyecto.gestock.purchaseorder.domain.PurchaseOrder;
+import com.proyecto.gestock.shoppingcart.domain.ShoppingCart;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,6 +31,7 @@ public class Customer {
 
     @NotNull
     @Email
+    @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$", message = "Invalid email format")
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -40,6 +39,9 @@ public class Customer {
     @PastOrPresent
     @Column(nullable = false)
     private LocalDate registrationDate;
+
+    @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ShoppingCart> shoppingCarts = new ArrayList<>();
 
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PurchaseOrder> purchaseOrders = new ArrayList<>();

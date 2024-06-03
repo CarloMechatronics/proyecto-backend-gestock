@@ -2,6 +2,7 @@ package com.proyecto.gestock.orderitem.domain;
 
 import com.proyecto.gestock.purchaseorder.domain.PurchaseOrder;
 import com.proyecto.gestock.product.domain.Product;
+import com.proyecto.gestock.shoppingcart.domain.ShoppingCart;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotNull;
@@ -30,13 +31,13 @@ public class OrderItem {
     private Integer quantity;
 
     @NotNull
-    @DecimalMin(value = "0.0", inclusive = false, message = "Price must be greater than zero")
+    @DecimalMin(value = "0.0", inclusive = false)
     @Column(nullable = false)
     private BigDecimal price;
 
     @ManyToOne
-    @JoinColumn(name = "purchaseOrder_id", nullable = false)
-    private PurchaseOrder purchaseOrder;
+    @JoinColumn(name = "shoppingCart_id", nullable = false)
+    private ShoppingCart shoppingCart;
 
     @ManyToOne
     @JoinColumn(name = "product_id", nullable = false)
@@ -61,7 +62,7 @@ public class OrderItem {
                 "id=" + id +
                 ", quantity=" + quantity +
                 ", price=" + price +
-                ", order=" + (purchaseOrder != null ? purchaseOrder.getId() : "null") +
+                ", order=" + (shoppingCart != null ? shoppingCart.getId() : "null") +
                 ", product=" + (product != null ? product.getId() : "null") +
                 '}';
     }
