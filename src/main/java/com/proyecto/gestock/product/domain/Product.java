@@ -3,7 +3,6 @@ package com.proyecto.gestock.product.domain;
 import com.proyecto.gestock.brand.domain.Brand;
 import com.proyecto.gestock.category.domain.Category;
 import com.proyecto.gestock.orderitem.domain.OrderItem;
-import com.proyecto.gestock.supplier.domain.Supplier;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
@@ -31,10 +30,9 @@ public class Product {
     @Column(nullable = false)
     private String name;
 
-    @NotBlank
-    @Size(max = 255)
+    @NotEmpty
     @Column(nullable = false)
-    private String summary;
+    private String logo = "https://cdn4.iconfinder.com/data/icons/core-ui-outlined/32/outlined_placeholder-256.png";
 
     @NotBlank
     @Size(max = 1020)
@@ -49,11 +47,7 @@ public class Product {
     @NotNull
     @PositiveOrZero
     @Column(nullable = false)
-    private Integer stock;
-
-    @NotNull
-    @Column(nullable = false)
-    private Boolean available = true;
+    private Integer stock = 0;
 
     @NotNull
     @ManyToOne
@@ -64,11 +58,6 @@ public class Product {
     @ManyToOne
     @JoinColumn(name = "category_id", nullable = false)
     private Category category;
-
-    @NotNull
-    @ManyToOne
-    @JoinColumn(name = "supplier_id", nullable = false)
-    private Supplier supplier;
 
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> orderItems = new ArrayList<>();
@@ -85,10 +74,6 @@ public class Product {
         if (this.stock < amount)
             throw new IllegalArgumentException("Insufficient stock to subtract");
         this.stock -= amount;
-    }
-
-    public boolean isAvailable() {
-        return available;
     }
 
     @Override
@@ -112,8 +97,8 @@ public class Product {
                 ", description='" + description + '\'' +
                 ", price=" + price +
                 ", stock=" + stock +
+                ", brand=" + (brand != null ? brand.getId() : "null") +
                 ", category=" + (category != null ? category.getId() : "null") +
-                ", supplier=" + (supplier != null ? supplier.getId() : "null") +
                 '}';
     }
 }

@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 public class ProductInfoDto {
     private Long id;
     private String name;
-    private String summary;
     private String description;
     private BigDecimal price;
     private Brand brand;

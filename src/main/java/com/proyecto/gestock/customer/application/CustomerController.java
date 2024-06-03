@@ -52,12 +52,6 @@ public class CustomerController {
         return new ResponseEntity<>(purchaseOrder, HttpStatus.CREATED);
     }
 
-//    @GetMapping("/products/available")
-//    public ResponseEntity<List<Product>> getAvailableProducts() {
-//        List<Product> availableProducts = customerService.getAvailableProducts();
-//        return ResponseEntity.ok(availableProducts);
-//    }
-
     @GetMapping("/orders/{id}")
     public ResponseEntity<PurchaseOrder> getPurchaseOrder(@PathVariable Long id) {
         PurchaseOrder purchaseOrder = customerService.getPurchaseOrder(id);

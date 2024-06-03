@@ -14,16 +14,13 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @Getter
 @Setter
-public class ProductRequestDto {
+public class ProductCreateDto {
     @NullableSize(min = 2, max = 60)
     private String name;
-    @NullableSize(max = 255)
-    private String summary;
     @NullableSize(max = 1020)
     private String description;
     private BigDecimal price;
     private Integer stock;
-    private Boolean available;
     private Brand brand;
     private Category category;
 }

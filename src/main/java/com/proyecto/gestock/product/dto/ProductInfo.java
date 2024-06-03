@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 public interface ProductInfo {
     Long getId();
     String getName();
-    String getSummary();
     String getDescription();
     BigDecimal getPrice();
     Brand getBrand();

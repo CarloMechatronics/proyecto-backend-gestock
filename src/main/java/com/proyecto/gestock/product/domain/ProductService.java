@@ -1,5 +1,9 @@
 package com.proyecto.gestock.product.domain;
 
+import com.proyecto.gestock.brand.domain.Brand;
+import com.proyecto.gestock.brand.infrastructure.BrandRepository;
+import com.proyecto.gestock.category.domain.Category;
+import com.proyecto.gestock.category.infrastructure.CategoryRepository;
 import com.proyecto.gestock.exceptions.ResourceNotFoundException;
 import com.proyecto.gestock.product.dto.*;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
@@ -19,12 +23,16 @@ public class ProductService {
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
     private final ModelMapper nonNullMapper;
+    private final BrandRepository brandRepository;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, ModelMapper modelMapper, @Qualifier("nonNullMapper") ModelMapper nonNullMapper) {
+    public ProductService(ProductRepository productRepository, ModelMapper modelMapper, @Qualifier("nonNullMapper") ModelMapper nonNullMapper, BrandRepository brandRepository, CategoryRepository categoryRepository) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.nonNullMapper = nonNullMapper;
+        this.brandRepository = brandRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     //-------ADMIN--------//
@@ -54,23 +62,50 @@ public class ProductService {
         return productRepository.findAllByStockLessThanEqual(stock);
     }
 
-    public List<Product> findAllProductsByAvailable(Boolean available) {
-        return productRepository.findAllByAvailable(available);
-    }
-
     //----POST----//
+    @Transactional
+    public Product saveProduct(ProductCreateDto productCreateDto) {
+        if (productCreateDto.getBrand() == null)
+            throw new IllegalArgumentException("Category cannot be null");
+
+        Brand brand;
+        if (productCreateDto.getBrand().getId() != null) {
+            brand = brandRepository.findById(productCreateDto.getBrand().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Brand not found"));
+        } else if (productCreateDto.getBrand().getName() != null && !productCreateDto.getBrand().getName().isEmpty()) {
+            brand = brandRepository.findByNameAndActiveTrue(productCreateDto.getBrand().getName())
+                    .orElseThrow(() -> new IllegalArgumentException("Brand not found"));
+        } else throw new IllegalArgumentException("Brand id or name must be provided");
+
+        Category category;
+        if (productCreateDto.getCategory().getId() != null) {
+            category = categoryRepository.findById(productCreateDto.getCategory().getId())
+                    .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+        } else if (productCreateDto.getCategory().getName() != null && !productCreateDto.getCategory().getName().isEmpty()) {
+            category = categoryRepository.findByName(productCreateDto.getCategory().getName())
+                    .orElseThrow(() -> new IllegalArgumentException("Category not found"));
+        } else throw new IllegalArgumentException("Category id or name must be provided");
+
+        Product newProduct = nonNullMapper.map(productCreateDto, Product.class);
+        newProduct.setBrand(brand);
+        newProduct.setCategory(category);
+
+        return productRepository.save(newProduct);
+    }
 
     //----PATCH----//
     @Transactional
-    public Product updateProductById(Long id, ProductRequestDto product) {
+    public Product updateProductById(Long id, ProductUpdateDto productUpdateDto) {
         Product existingProduct = productRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
 
-        nonNullMapper.map(product, existingProduct);
+        nonNullMapper.map(productUpdateDto, existingProduct);
 
         return productRepository.save(existingProduct);
     }
 
+
+    //----DELETE----//
     @Transactional
     public void deleteProductById(Long id) {
         if (!productRepository.existsById(id))
@@ -79,12 +114,10 @@ public class ProductService {
         productRepository.deleteById(id);
     }
 
-    //----DELETE----//
-
 
     //--------CUSTOMER--------//
     public ProductInfoDto findValidProductByName(String name) {
-        ProductInfo productInfo = productRepository.findByNameAndAvailableTrueAndStockGreaterThan(name, 0)
+        ProductInfo productInfo = productRepository.findByNameAndStockGreaterThanEqual(name, 0)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with name '" + name + "' not found"));
 
         return modelMapper.map(productInfo, ProductInfoDto.class);
@@ -92,16 +125,16 @@ public class ProductService {
 
     public List<ProductDisplayDto> findAllValidProductsByNameContains(String namePart) {
         List<ProductDisplay> productDisplayList = productRepository
-                .findAllByNameContainsAndAvailableTrueAndStockGreaterThan(namePart, 0);
+                .findAllByNameContainsAndStockGreaterThanEqual(namePart, 0);
 
         return productDisplayList.stream()
                 .map(productDisplay -> modelMapper.map(productDisplay, ProductDisplayDto.class))
                 .collect(Collectors.toList());
     }
 
-    public List<ProductDisplayDto> findAllValidProductByPriceRange(BigDecimal min, BigDecimal max) {
+    public List<ProductDisplayDto> findAllValidProductByPriceRange(String namePart, BigDecimal min, BigDecimal max) {
         List<ProductDisplay> productDisplayList = productRepository
-                .findAllByPriceGreaterThanEqualAndPriceLessThanEqualAndAvailableTrueAndStockGreaterThan(min, max, 0);
+                .findAllByNameContainsAndPriceGreaterThanEqualAndPriceLessThanEqualAndStockGreaterThanEqual(namePart, min, max, 0);
 
         return productDisplayList.stream()
                 .map(productDisplay -> modelMapper.map(productDisplay, ProductDisplayDto.class))

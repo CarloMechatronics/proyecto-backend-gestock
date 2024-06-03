@@ -4,7 +4,8 @@ import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.product.domain.ProductService;
 import com.proyecto.gestock.product.dto.ProductDisplayDto;
 import com.proyecto.gestock.product.dto.ProductInfoDto;
-import com.proyecto.gestock.product.dto.ProductRequestDto;
+import com.proyecto.gestock.product.dto.ProductCreateDto;
+import com.proyecto.gestock.product.dto.ProductUpdateDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -56,14 +57,9 @@ public class ProductController {
         return new ResponseEntity<>(productService.findAllProductsByStockLessThanEqual(stock), HttpStatus.OK);
     }
 
-    @GetMapping("/all/available")
-    public ResponseEntity<List<Product>> getProductsByAvailable(@RequestParam Boolean available) {
-        return new ResponseEntity<>(productService.findAllProductsByAvailable(available), HttpStatus.OK);
-    }
-
     @PatchMapping("/update/{id}")
-    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody ProductRequestDto product) {
-        return new ResponseEntity<>(productService.updateProductById(id, product), HttpStatus.OK);
+    public ResponseEntity<Product> updateProduct(@PathVariable Long id, @RequestBody ProductUpdateDto productUpdateDto) {
+        return new ResponseEntity<>(productService.updateProductById(id, productUpdateDto), HttpStatus.OK);
     }
 
     //--------CUSTOMER--------//
@@ -78,7 +74,7 @@ public class ProductController {
     }
 
     @GetMapping("/price")
-    public ResponseEntity<List<ProductDisplayDto>> getAllValidProductsByPriceRange(@RequestParam BigDecimal min, @RequestParam BigDecimal max) {
-        return new ResponseEntity<>(productService.findAllValidProductByPriceRange(min, max), HttpStatus.OK);
+    public ResponseEntity<List<ProductDisplayDto>> getAllValidProductsByNameContainsAndPriceRange(@RequestParam("name") String namePart, @RequestParam BigDecimal min, @RequestParam BigDecimal max) {
+        return new ResponseEntity<>(productService.findAllValidProductByPriceRange(namePart, min, max), HttpStatus.OK);
     }
 }

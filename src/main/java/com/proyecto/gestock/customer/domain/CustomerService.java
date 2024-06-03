@@ -77,12 +77,6 @@ public class CustomerService {
         return purchaseOrderRepository.save(purchaseOrder);
     }
 
-//    public List<Product> getAvailableProducts() {
-//        List<Product> availableProducts = productRepository.findAllByAvailableTrue();
-//        return availableProducts.stream().filter(Product::isAvailable)
-//                .collect(Collectors.toList());
-//    }
-
     public PurchaseOrder getPurchaseOrder(Long id) {
         return purchaseOrderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
     }
