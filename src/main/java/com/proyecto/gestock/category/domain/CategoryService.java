@@ -2,10 +2,14 @@ package com.proyecto.gestock.category.domain;
 
 import com.proyecto.gestock.brand.domain.Brand;
 import com.proyecto.gestock.brand.dto.BrandUpdateDto;
+import com.proyecto.gestock.category.dto.CategoryCreateDto;
+import com.proyecto.gestock.category.dto.CategoryDisplay;
+import com.proyecto.gestock.category.dto.CategoryDisplayDto;
 import com.proyecto.gestock.category.dto.CategoryUpdateDto;
 import com.proyecto.gestock.category.infrastructure.CategoryRepository;
 import com.proyecto.gestock.exceptions.ResourceNotFoundException;
 import com.proyecto.gestock.product.domain.Product;
+import com.proyecto.gestock.product.dto.ProductDisplayDto;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,27 +18,30 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class CategoryService {
     private final CategoryRepository categoryRepository;
     private final ProductRepository productRepository;
     private final ModelMapper nonNullMapper;
+    private final ModelMapper modelMapper;
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository, ProductRepository productRepository, @Qualifier("nonNullMapper") ModelMapper nonNullMapper) {
+    public CategoryService(CategoryRepository categoryRepository, ProductRepository productRepository, @Qualifier("nonNullMapper") ModelMapper nonNullMapper, @Qualifier("modelMapper") ModelMapper modelMapper) {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.nonNullMapper = nonNullMapper;
+        this.modelMapper = modelMapper;
     }
 
     //--------ADMIN--------//
     //----GET----//
-    public List<Category> findAll() {
+    public List<Category> findAllCategories() {
         return categoryRepository.findAll();
     }
 
-    public Category findById(Long id) {
+    public Category findCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
     }
@@ -48,13 +55,13 @@ public class CategoryService {
 
     //----POSTS----//
     @Transactional
-    public Category saveCategory(Category category) {
-        return categoryRepository.save(category);
+    public Category saveCategory(CategoryCreateDto categoryCreateDto) {
+        return categoryRepository.save(nonNullMapper.map(categoryCreateDto, Category.class));
     }
 
     //----PATCH----//
     @Transactional
-    public Category updateBrandById(Long id, CategoryUpdateDto categoryUpdateDto) {
+    public Category updateCategoryById(Long id, CategoryUpdateDto categoryUpdateDto) {
         Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
         nonNullMapper.map(categoryUpdateDto, existingCategory);
@@ -76,6 +83,7 @@ public class CategoryService {
     }
 
     //----DELETE----//
+    @Transactional
     public List<Category> deleteCategoryById(Long id) {
         if (!categoryRepository.existsById(id)) {
             throw new ResourceNotFoundException("Category with id " + id + " not found");
@@ -86,6 +94,7 @@ public class CategoryService {
         return categoryRepository.findAll();
     }
 
+    @Transactional
     public List<Product> deleteCategoryProductByIds(Long categoryId, Long productId) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category with id " + categoryId + " not found"));
@@ -101,5 +110,33 @@ public class CategoryService {
         categoryRepository.save(category);
 
         return category.getProducts();
+    }
+
+
+    //--------CUSTOMER--------//
+    public List<CategoryDisplayDto> findAllCategoriesByIdNotNull() {
+        List<CategoryDisplay> categoryDisplayList = categoryRepository.findAllByIdNotNull();
+
+        return categoryDisplayList.stream()
+                .map(categoryDisplay -> modelMapper.map(categoryDisplay, CategoryDisplayDto.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<CategoryDisplayDto> findAllCategoriesByNameContains(String namePart) {
+        List<CategoryDisplay> categoryDisplayList = categoryRepository.findAllByNameContains(namePart);
+
+        return categoryDisplayList.stream()
+                .map(categoryDisplay -> modelMapper.map(categoryDisplay, CategoryDisplayDto.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<ProductDisplayDto> findAllCategoryProductsByName(String name) {
+        Category category = categoryRepository.findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException("Category with name " + name + " not found"));
+        List<Product> productList = category.getProducts();
+
+        return productList.stream()
+                .map(product -> modelMapper.map(product, ProductDisplayDto.class))
+                .collect(Collectors.toList());
     }
 }

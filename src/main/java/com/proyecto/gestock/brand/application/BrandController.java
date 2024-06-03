@@ -30,7 +30,7 @@ public class BrandController {
         return new ResponseEntity<>(brandService.findAllBrands(), HttpStatus.OK);
     }
     
-    @GetMapping("/{id}")
+    @GetMapping("/all/{id}")
     public ResponseEntity<Brand> getBrandById(@PathVariable Long id) {
         return new ResponseEntity<>(brandService.findBrandById(id), HttpStatus.OK);
     }
@@ -40,14 +40,14 @@ public class BrandController {
         return new ResponseEntity<>(brandService.findAllBrandsbyActive(active), HttpStatus.OK);
     }
 
-    @GetMapping("/{id}/products")
+    @GetMapping("/all/{id}/products")
     public ResponseEntity<List<Product>> getAllBrandProducts(@PathVariable Long id) {
         return new ResponseEntity<>(brandService.findAllBrandProductsById(id), HttpStatus.OK);
     }
 
-    @PostMapping("/{id}")
-    public ResponseEntity<Brand> createBrand(@PathVariable Long id, @RequestBody BrandCreateDto brandCreateDto) {
-        return new ResponseEntity<>(brandService.saveBrand(id, brandCreateDto), HttpStatus.CREATED);
+    @PostMapping
+    public ResponseEntity<Brand> createBrand(@RequestBody BrandCreateDto brandCreateDto) {
+        return new ResponseEntity<>(brandService.saveBrand(brandCreateDto), HttpStatus.CREATED);
     }
 
     @PatchMapping("/{id}/update")
@@ -84,7 +84,7 @@ public class BrandController {
     }
 
     @GetMapping("/{brandName}/products")
-    public ResponseEntity<List<ProductDisplayDto>> getAllBrandsProductsDisplayDto(@PathVariable String brandName) {
+    public ResponseEntity<List<ProductDisplayDto>> getAllBrandProductsDisplayDto(@PathVariable String brandName) {
         return new ResponseEntity<>(brandService.findAllBrandProductsDisplayDto(brandName), HttpStatus.OK);
     }
 }

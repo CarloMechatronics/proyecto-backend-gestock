@@ -57,7 +57,7 @@ public class BrandService {
 
     //----POST----//
     @Transactional
-    public Brand saveBrand(Long Id, BrandCreateDto brandCreateDto) {
+    public Brand saveBrand(BrandCreateDto brandCreateDto) {
         return brandRepository.save(nonNullMapper.map(brandCreateDto, Brand.class));
     }
 
@@ -132,7 +132,7 @@ public class BrandService {
 
     public List<ProductDisplayDto> findAllBrandProductsDisplayDto(String name) {
         Brand brand = brandRepository.findByNameAndActiveTrue(name)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with name " + name + " not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("Brand with name " + name + " not found"));
         List<Product> productList = brand.getProducts();
 
         return productList.stream()

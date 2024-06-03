@@ -13,5 +13,6 @@ import lombok.Setter;
 public class CategoryUpdateDto {
     @NullableSize(min = 2, max = 16)
     private String name;
+
     private String imageUrl;
 }

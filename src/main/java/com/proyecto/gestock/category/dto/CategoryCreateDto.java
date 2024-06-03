@@ -21,7 +21,5 @@ public class CategoryCreateDto {
 
     private String imageUrl;
 
-    private Boolean active;
-
     private List<Product> products;
 }
