@@ -27,7 +27,7 @@ public class Category {
 
     @NotBlank
     @Size(min = 4, max = 16)
-    @Column(nullable = false)
+    @Column(unique = true, nullable = false)
     private String name;
 
     @NotEmpty

@@ -34,6 +34,7 @@ public class UserAccount {
 
     @NotNull
     @Email
+    @Size(min = 8, max = 64)
     @Pattern(regexp = "^[A-Za-z0-9+_.-]+@(.+)$", message = "Invalid email format")
     @Column(nullable = false)
     private String email;

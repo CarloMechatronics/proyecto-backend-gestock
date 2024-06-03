@@ -1,136 +1,178 @@
 package com.proyecto.gestock.customer.domain;
 
-import com.proyecto.gestock.customer.dto.CustomerDTO;
+import com.proyecto.gestock.customer.dto.CustomerCreateDto;
+import com.proyecto.gestock.customer.dto.CustomerResponseDto;
+import com.proyecto.gestock.customer.dto.CustomerUpdateDto;
 import com.proyecto.gestock.customer.infrastructure.CustomerRepository;
 import com.proyecto.gestock.exceptions.ResourceNotFoundException;
+import com.proyecto.gestock.orderitem.domain.OrderItem;
+import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
-import com.proyecto.gestock.purchaseorder.domain.PurchaseOrder;
 import com.proyecto.gestock.purchaseorder.infrastructure.PurchaseOrderRepository;
+import com.proyecto.gestock.shoppingcart.domain.ShoppingCart;
+import com.proyecto.gestock.shoppingcart.infrastructure.ShoppingCartRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 @Service
 public class CustomerService {
     private final CustomerRepository customerRepository;
-    private final ProductRepository productRepository;
+    private final ShoppingCartRepository shoppingCartRepository;
     private final PurchaseOrderRepository purchaseOrderRepository;
+    private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
+    private final ModelMapper nonNullMapper;
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository, ProductRepository productRepository, PurchaseOrderRepository purchaseOrderRepository , ModelMapper modelMapper) {
+    public CustomerService(CustomerRepository customerRepository, ProductRepository productRepository, PurchaseOrderRepository purchaseOrderRepository , ModelMapper modelMapper, ModelMapper nonNullMapper, ShoppingCartRepository shoppingCartRepository) {
         this.customerRepository = customerRepository;
-        this.productRepository = productRepository;
+        this.shoppingCartRepository = shoppingCartRepository;
         this.purchaseOrderRepository = purchaseOrderRepository;
+        this.productRepository = productRepository;
         this.modelMapper = modelMapper;
+        this.nonNullMapper = nonNullMapper;
     }
 
-    public CustomerDTO getCustomerById(Long id) {
-        Customer customer = customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-        return modelMapper.map(customer, CustomerDTO.class);
+    //--------ADMIN--------//
+    //----GET----//
+    public List<Customer> findAllCustomers() {
+        return customerRepository.findAll();
     }
 
-    public CustomerDTO getCustomerByEmail(String email) {
-        Customer customer = customerRepository.findByEmail(email);
-        if(customer == null) {
-            throw new ResourceNotFoundException("Customer not found");
-        }
-        return modelMapper.map(customer, CustomerDTO.class);
+    public Customer findCustomerById(Long id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with id " + id + " not found"));
     }
 
-    public CustomerDTO createCustomer(CustomerDTO customerDTO) {
-        Customer customer = modelMapper.map(customerDTO, Customer.class);
-        customer = customerRepository.save(customer);
-        return modelMapper.map(customer, CustomerDTO.class);
+    public Customer findCustomerByName(String name) {
+        return customerRepository.findByName(name)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with name " + name + " not found"));
     }
 
-    public void deleteCustomer(Long id) {
-        Customer customer = customerRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-        customerRepository.delete(customer);
+    public Customer findCustomerByEmail(String email) {
+        return customerRepository.findByEmail(email)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with email " + email + " not found"));
     }
 
-//    public PurchaseOrder createPurchaseOrder(Long customerId, List<Long> productIds) {
-//        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
-//        List<Product> products = productRepository.findAllById(productIds);
-//
-//        PurchaseOrder purchaseOrder = new PurchaseOrder();
-//        purchaseOrder.se(customer);
-//
-//        List<OrderItem> orderItems = products.stream().map(product -> {
-//            OrderItem orderItem = new OrderItem();
-//            orderItem.setProduct(product);
-//            orderItem.setPrice(product.getPrice());
-//            orderItem.setQuantity(1); // Default quantity
-//            orderItem.setPurchaseOrder(purchaseOrder);
-//            return orderItem;
-//        }).collect(Collectors.toList());
-//
-//        purchaseOrder.setOrderItems(orderItems);
-//
-//        return purchaseOrderRepository.save(purchaseOrder);
-//    }
-
-    public PurchaseOrder getPurchaseOrder(Long id) {
-        return purchaseOrderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
+    //----POST----//
+    public Customer saveCustomer(CustomerCreateDto customerCreateDto) {
+        return customerRepository.save(modelMapper.map(customerCreateDto, Customer.class));
     }
 
-//    public PurchaseOrder updatePurchaseOrder(Long id, List<Long> productIds) {
-//        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
-//        List<Product> products = productRepository.findAllById(productIds);
-//
-//        List<OrderItem> orderItems = products.stream().map(product -> {
-//            OrderItem orderItem = new OrderItem();
-//            orderItem.setProduct(product);
-//            orderItem.setPrice(product.getPrice());
-//            orderItem.setQuantity(1);
-//            orderItem.setPurchaseOrder(purchaseOrder);
-//            return orderItem;
-//        }).collect(Collectors.toList());
-//
-//        purchaseOrder.setOrderItems(orderItems);
-//        return purchaseOrderRepository.save(purchaseOrder);
-//    }
+    //----DELETE----//
+    public void deleteCustomerById(Long id) {
+        if (!customerRepository.existsById(id))
+            throw new ResourceNotFoundException("Customer with id " + id + " not found");
 
-//    public BigDecimal getTotalPrice(Long purchaseOrderId) {
-//        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(purchaseOrderId).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
-//
-//        return purchaseOrder.getOrderItems().stream()
-//                .map(orderItem -> orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())))
-//                .reduce(BigDecimal.ZERO, BigDecimal::add);
-//    }
+        customerRepository.deleteById(id);
+    }
 
 
-//    public PurchaseOrder updateOrderItemQuantity(Long orderId, Long productId, Integer quantity) {
-//        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(orderId).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
-//
-//        Optional<OrderItem> orderItemOptional = purchaseOrder.getOrderItems().stream()
-//                .filter(orderItem -> orderItem.getProduct().getId().equals(productId))
-//                .findFirst();
-//        if (orderItemOptional.isPresent()) {
-//            OrderItem orderItem = orderItemOptional.get();
-//            orderItem.setQuantity(quantity);
-//            purchaseOrderRepository.save(purchaseOrder);
-//        } else {
-//            throw new ResourceNotFoundException("Product not found in purchase order");
-//        }
-//        return purchaseOrder;
-//    }
+    //--------ANYONE--------//
+    public CustomerResponseDto registerCustomer(CustomerCreateDto customerCreateDto) {
+        Customer customer = customerRepository.save(modelMapper.map(customerCreateDto, Customer.class));
 
-    public void deletePurchaseOrder(Long id) {
-        PurchaseOrder purchaseOrder = purchaseOrderRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Purchase order not found"));
-        purchaseOrderRepository.delete(purchaseOrder);
+        return modelMapper.map(customer, CustomerResponseDto.class);
+    }
+
+
+    //--------CUSTOMER--------//
+    //----GET----//
+    public ShoppingCart findShoppingCartById(Long id) {
+        return shoppingCartRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Shopping cart with id " + id + " not foun"));
+    }
+
+    public BigDecimal findTotalAmountById(Long id) {
+        ShoppingCart shoppingCart = shoppingCartRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Shopping Cart with " + id + " not found"));
+
+        return shoppingCart.getOrderItems().stream()
+                .map(orderItem -> orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    //----POST----//
+    public ShoppingCart createShoppingCartByIds(Long customerId, List<Long> productIds) {
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
+        List<Product> products = productRepository.findAllById(productIds);
+
+        ShoppingCart shoppingCart = new ShoppingCart();
+
+        List<OrderItem> orderItems = products.stream().map(product -> {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setProduct(product);
+            orderItem.setPrice(product.getPrice());
+            orderItem.setQuantity(1);
+            orderItem.setShoppingCart(shoppingCart);
+            return orderItem;
+        }).collect(Collectors.toList());
+
+        shoppingCart.setOrderItems(orderItems);
+
+        return shoppingCartRepository.save(shoppingCart);
+    }
+
+    //----PATCH----//
+    public CustomerResponseDto updateCustomerById(Long id, CustomerUpdateDto customerUpdateDto) {
+        Customer existing = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with id " + id + " not found"));
+
+        nonNullMapper.map(customerUpdateDto, existing);
+
+        customerRepository.save(existing);
+
+        return modelMapper.map(existing, CustomerResponseDto.class);
+    }
+
+
+    public ShoppingCart updateShoppingCartByIds(Long id, List<Long> productIds) {
+        ShoppingCart shoppingCart = shoppingCartRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Shopping Cart with id " + id + " not found"));
+        List<Product> products = productRepository.findAllById(productIds);
+
+        List<OrderItem> orderItems = products.stream().map(product -> {
+            OrderItem orderItem = new OrderItem();
+            orderItem.setProduct(product);
+            orderItem.setPrice(product.getPrice());
+            orderItem.setQuantity(1);
+            orderItem.setShoppingCart(shoppingCart);
+            return orderItem;
+        }).collect(Collectors.toList());
+
+        shoppingCart.setOrderItems(orderItems);
+        return shoppingCartRepository.save(shoppingCart);
+    }
+
+    public ShoppingCart updateShoppingCartItemQuantityByIds(Long cartId, Long productId, Integer quantity) {
+        ShoppingCart shoppingCart = shoppingCartRepository.findById(cartId)
+                .orElseThrow(() -> new ResourceNotFoundException("Shopping Cart with id " + cartId + " not found"));
+
+        Optional<OrderItem> orderItemOptional = shoppingCart.getOrderItems().stream()
+                .filter(orderItem -> orderItem.getProduct().getId().equals(productId))
+                .findFirst();
+        if (orderItemOptional.isPresent()) {
+            OrderItem orderItem = orderItemOptional.get();
+            orderItem.setQuantity(quantity);
+            shoppingCartRepository.save(shoppingCart);
+        } else
+            throw new ResourceNotFoundException("Product not found in purchase order");
+
+        return shoppingCart;
+    }
+
+    //----DELETE----//
+    public void deleteShoppingCartById(Long id) {
+        if (!shoppingCartRepository.existsById(id))
+            throw new ResourceNotFoundException("Shopping Cart with id " + id + " not found");
+
+        shoppingCartRepository.deleteById(id);
     }
 }
-
-
-/*
- * C R U D
- * crear una lista de productos para comprar
- * obtener productos disponibles
- * obtener lista creada
- * actualizar lista de productos a comprar --update
- * obtener precio de productos
- * eliminar producto de la lista -- Update
- * eliminar lista de productos
- *
- */
