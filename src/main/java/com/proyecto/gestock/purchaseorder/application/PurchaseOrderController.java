@@ -2,6 +2,7 @@ package com.proyecto.gestock.purchaseorder.application;
 
 import com.proyecto.gestock.purchaseorder.domain.PurchaseOrder;
 import com.proyecto.gestock.purchaseorder.domain.PurchaseOrderService;
+import com.proyecto.gestock.purchaseorder.domain.Status;
 import com.proyecto.gestock.shoppingcart.domain.ShoppingCart;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,7 @@ public class PurchaseOrderController {
         this.purchaseOrderService = purchaseOrderService;
     }
 
+    //--------ADMIN--------//
     @GetMapping("/all")
     public ResponseEntity<List<PurchaseOrder>> getAllPurchaseOrders() {
         return new ResponseEntity<>(purchaseOrderService.findAllPurchaseOrders(), HttpStatus.OK);
@@ -28,6 +30,11 @@ public class PurchaseOrderController {
     @GetMapping("/all/{id}")
     public ResponseEntity<PurchaseOrder> getPurchaseOrderById(@PathVariable Long id) {
         return new ResponseEntity<>(purchaseOrderService.findPurchaseOrderById(id), HttpStatus.OK);
+    }
+
+    @PatchMapping("/{id}/status")
+    public ResponseEntity<PurchaseOrder> updatePurchaseOrderStatusById(@PathVariable Long id, @RequestParam Status status) {
+        return new ResponseEntity<>(purchaseOrderService.updatePurchaseOrderStatusById(id, status), HttpStatus.OK);
     }
 
 

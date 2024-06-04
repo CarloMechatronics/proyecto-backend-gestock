@@ -35,19 +35,23 @@ public class BrandService {
 
     //--------ADMIN--------//
     //----GET----//
+    @Transactional(readOnly = true)
     public List<Brand> findAllBrands() {
         return brandRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Brand findBrandById(Long id) {
         return brandRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Brand with id " + id + " not found"));
     }
 
+    @Transactional(readOnly = true)
     public List<Brand> findAllBrandsbyActive(Boolean active) {
         return brandRepository.findAllByActive(active);
     }
 
+    @Transactional(readOnly = true)
     public List<Product> findAllBrandProductsById(Long id) {
         Brand brand = brandRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with name " + id + " not found"));
@@ -116,6 +120,7 @@ public class BrandService {
 
 
     //--------ANYONE--------//
+    @Transactional(readOnly = true)
     public List<BrandDisplayDto> findAllActiveBrands() {
         List<BrandDisplay> brandDisplayList = brandRepository.findAllByActiveTrue();
         return brandDisplayList.stream()
@@ -123,6 +128,7 @@ public class BrandService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<BrandDisplayDto> findAllActiveBrandsByNameContains(String namePart) {
         List<BrandDisplay> brandDisplayList = brandRepository.findAllByNameContainsAndActiveTrue(namePart);
         return brandDisplayList.stream()
@@ -130,6 +136,7 @@ public class BrandService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<ProductDisplayDto> findAllBrandProductsDisplayDto(String name) {
         Brand brand = brandRepository.findByNameAndActiveTrue(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Brand with name " + name + " not found"));

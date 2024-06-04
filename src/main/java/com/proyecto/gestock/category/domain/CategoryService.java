@@ -37,15 +37,18 @@ public class CategoryService {
 
     //--------ADMIN--------//
     //----GET----//
+    @Transactional(readOnly = true)
     public List<Category> findAllCategories() {
         return categoryRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Category findCategoryById(Long id) {
         return categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
     }
 
+    @Transactional(readOnly = true)
     public List<Product> findAllCategoryProductsById(Long id) {
         Category category = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Product with name " + id + " not found"));
@@ -114,6 +117,7 @@ public class CategoryService {
 
 
     //--------ANYONE--------//
+    @Transactional(readOnly = true)
     public List<CategoryDisplayDto> findAllCategoriesByIdNotNull() {
         List<CategoryDisplay> categoryDisplayList = categoryRepository.findAllByIdNotNull();
 
@@ -122,6 +126,7 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<CategoryDisplayDto> findAllCategoriesByNameContains(String namePart) {
         List<CategoryDisplay> categoryDisplayList = categoryRepository.findAllByNameContains(namePart);
 
@@ -130,6 +135,7 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<ProductDisplayDto> findAllCategoryProductsByName(String name) {
         Category category = categoryRepository.findByName(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Category with name " + name + " not found"));

@@ -5,6 +5,8 @@ import com.proyecto.gestock.customer.domain.CustomerService;
 import com.proyecto.gestock.customer.dto.CustomerCreateDto;
 import com.proyecto.gestock.customer.dto.CustomerResponseDto;
 import com.proyecto.gestock.customer.dto.CustomerUpdateDto;
+import com.proyecto.gestock.product.domain.Product;
+import com.proyecto.gestock.purchaseorder.domain.PurchaseOrder;
 import com.proyecto.gestock.shoppingcart.domain.ShoppingCart;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,9 +51,34 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.findCustomerByEmail(email));
     }
 
+    @GetMapping("/all/name")
+    public ResponseEntity<List<Customer>> getAllCustomersByNameContains(@RequestParam("name") String namePart) {
+        return new ResponseEntity<>(customerService.findAllCustomersByNameContains(namePart), HttpStatus.OK);
+    }
+
+    @GetMapping("/all/email")
+    public ResponseEntity<List<Customer>> getAllCustomersByEmailContains(@RequestParam("email") String emailPart) {
+        return new ResponseEntity<>(customerService.findAllCustomersByEmailContains(emailPart), HttpStatus.OK);
+    }
+
+    @GetMapping("/all/{id}/shopping-carts")
+    public ResponseEntity<List<ShoppingCart>> getAllCustomerShoppingCartsById(@PathVariable Long id) {
+        return new ResponseEntity<>(customerService.findAllCustomerShoppingCartsById(id), HttpStatus.OK);
+    }
+
+    @GetMapping("/all/{id}/purchase-orders")
+    public ResponseEntity<List<PurchaseOrder>> getAllCustomerPurchaseOrdersById(@PathVariable Long id) {
+        return new ResponseEntity<>(customerService.findAllCustomerPurchaseOrdersById(id), HttpStatus.OK);
+    }
+
     @PostMapping("/all")
     public ResponseEntity<Customer> createCustomer(@RequestBody CustomerCreateDto customerCreateDto) {
         return new ResponseEntity<>(customerService.saveCustomer(customerCreateDto), HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/all/{id}/update")
+    public ResponseEntity<Customer> editCustomerById(@PathVariable Long id, @RequestBody CustomerUpdateDto customerUpdateDto) {
+        return new ResponseEntity<>(customerService.editCustomerById(id, customerUpdateDto), HttpStatus.OK);
     }
 
     @DeleteMapping("/{id}/delete")
