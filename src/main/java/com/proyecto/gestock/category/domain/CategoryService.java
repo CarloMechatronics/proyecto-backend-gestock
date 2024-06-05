@@ -1,5 +1,6 @@
 package com.proyecto.gestock.category.domain;
 
+import com.proyecto.gestock.authentication.utils.Authorization;
 import com.proyecto.gestock.brand.domain.Brand;
 import com.proyecto.gestock.brand.dto.BrandUpdateDto;
 import com.proyecto.gestock.category.dto.CategoryCreateDto;
@@ -8,6 +9,7 @@ import com.proyecto.gestock.category.dto.CategoryDisplayDto;
 import com.proyecto.gestock.category.dto.CategoryUpdateDto;
 import com.proyecto.gestock.category.infrastructure.CategoryRepository;
 import com.proyecto.gestock.exceptions.ResourceNotFoundException;
+import com.proyecto.gestock.exceptions.UnauthorizedOperationException;
 import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.product.dto.ProductDisplayDto;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
@@ -26,13 +28,15 @@ public class CategoryService {
     private final ProductRepository productRepository;
     private final ModelMapper nonNullMapper;
     private final ModelMapper modelMapper;
+    private final Authorization authorization;
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository, ProductRepository productRepository, @Qualifier("nonNullMapper") ModelMapper nonNullMapper, @Qualifier("modelMapper") ModelMapper modelMapper) {
+    public CategoryService(CategoryRepository categoryRepository, ProductRepository productRepository, @Qualifier("nonNullMapper") ModelMapper nonNullMapper, @Qualifier("modelMapper") ModelMapper modelMapper, Authorization authorization) {
         this.categoryRepository = categoryRepository;
         this.productRepository = productRepository;
         this.nonNullMapper = nonNullMapper;
         this.modelMapper = modelMapper;
+        this.authorization = authorization;
     }
 
     //--------ADMIN--------//
@@ -42,13 +46,18 @@ public class CategoryService {
     }
 
     public Category findCategoryById(Long id) {
-        return categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
+        return categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
+
     }
 
     public List<Product> findAllCategoryProductsById(Long id) {
-        Category category = categoryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with name " + id + " not found"));
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product with name " + id + " not found"));
 
         return category.getProducts();
     }
@@ -56,12 +65,18 @@ public class CategoryService {
     //----POST----//
     @Transactional
     public Category saveCategory(CategoryCreateDto categoryCreateDto) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
         return categoryRepository.save(nonNullMapper.map(categoryCreateDto, Category.class));
     }
 
     //----PATCH----//
     @Transactional
     public Category updateCategoryById(Long id, CategoryUpdateDto categoryUpdateDto) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
         Category existingCategory = categoryRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Category with id " + id + " not found"));
         nonNullMapper.map(categoryUpdateDto, existingCategory);
@@ -71,6 +86,9 @@ public class CategoryService {
 
     @Transactional
     public List<Product> addCategoryProductByIds(Long categoryId, Long productId) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category with id " + categoryId + " not found"));
 
@@ -85,6 +103,9 @@ public class CategoryService {
     //----DELETE----//
     @Transactional
     public List<Category> deleteCategoryById(Long id) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
         if (!categoryRepository.existsById(id)) {
             throw new ResourceNotFoundException("Category with id " + id + " not found");
         }
@@ -96,6 +117,9 @@ public class CategoryService {
 
     @Transactional
     public List<Product> deleteCategoryProductByIds(Long categoryId, Long productId) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ResourceNotFoundException("Category with id " + categoryId + " not found"));
 

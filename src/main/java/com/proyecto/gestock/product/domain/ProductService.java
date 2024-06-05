@@ -1,10 +1,12 @@
 package com.proyecto.gestock.product.domain;
 
+import com.proyecto.gestock.authentication.utils.Authorization;
 import com.proyecto.gestock.brand.domain.Brand;
 import com.proyecto.gestock.brand.infrastructure.BrandRepository;
 import com.proyecto.gestock.category.domain.Category;
 import com.proyecto.gestock.category.infrastructure.CategoryRepository;
 import com.proyecto.gestock.exceptions.ResourceNotFoundException;
+import com.proyecto.gestock.exceptions.UnauthorizedOperationException;
 import com.proyecto.gestock.product.dto.*;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
 import org.modelmapper.ModelMapper;
@@ -25,14 +27,16 @@ public class ProductService {
     private final ModelMapper nonNullMapper;
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
+    private final Authorization authorization;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, ModelMapper modelMapper, @Qualifier("nonNullMapper") ModelMapper nonNullMapper, BrandRepository brandRepository, CategoryRepository categoryRepository) {
+    public ProductService(ProductRepository productRepository, ModelMapper modelMapper, @Qualifier("nonNullMapper") ModelMapper nonNullMapper, BrandRepository brandRepository, CategoryRepository categoryRepository, Authorization authorization) {
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.nonNullMapper = nonNullMapper;
         this.brandRepository = brandRepository;
         this.categoryRepository = categoryRepository;
+        this.authorization = authorization;
     }
 
     //-------ADMIN--------//
@@ -42,29 +46,51 @@ public class ProductService {
     }
 
     public Product findProductById(Long id) {
-        return productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
+        Product product =  productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
+        return product;
     }
 
     public List<Product> findAllProductsByNameContains(String namePart) {
-        return productRepository.findAllByNameContains(namePart);
+        List<Product> products = productRepository.findAllByNameContains(namePart);
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
+        return products;
     }
 
     public List<Product> findAllProductsByPriceRange(BigDecimal min, BigDecimal max) {
-        return productRepository.findAllByPriceGreaterThanEqualAndPriceLessThanEqual(min, max);
+        List<Product> products = productRepository.findAllByPriceGreaterThanEqualAndPriceLessThanEqual(min, max);
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
+        return products;
     }
 
     public List<Product> findAllProductsByStockGreaterThanEqual(Integer stock) {
-        return productRepository.findAllByStockGreaterThanEqual(stock);
+        List<Product> products = productRepository.findAllByStockGreaterThanEqual(stock);
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
+        return products;
     }
 
     public List<Product> findAllProductsByStockLessThanEqual(Integer stock) {
-        return productRepository.findAllByStockLessThanEqual(stock);
+        List<Product> products =  productRepository.findAllByStockLessThanEqual(stock);
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
+        return products;
     }
 
     //----POST----//
     @Transactional
     public Product saveProduct(ProductCreateDto productCreateDto) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
         if (productCreateDto.getBrand() == null)
             throw new IllegalArgumentException("Category cannot be null");
 
@@ -96,8 +122,10 @@ public class ProductService {
     //----PATCH----//
     @Transactional
     public Product updateProductById(Long id, ProductUpdateDto productUpdateDto) {
-        Product existingProduct = productRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
+        Product existingProduct = productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
 
         nonNullMapper.map(productUpdateDto, existingProduct);
 
@@ -108,17 +136,18 @@ public class ProductService {
     //----DELETE----//
     @Transactional
     public void deleteProductById(Long id) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
         if (!productRepository.existsById(id))
             throw new ResourceNotFoundException("Product with id " + id + " not found");
-
         productRepository.deleteById(id);
     }
 
 
     //--------ANYONE--------//
     public ProductInfoDto findValidProductByName(String name) {
-        ProductInfo productInfo = productRepository.findByNameAndStockGreaterThanEqual(name, 0)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with name '" + name + "' not found"));
+        ProductInfo productInfo = productRepository.findByNameAndStockGreaterThanEqual(name, 0).orElseThrow(() -> new ResourceNotFoundException("Product with name '" + name + "' not found"));
 
         return modelMapper.map(productInfo, ProductInfoDto.class);
     }

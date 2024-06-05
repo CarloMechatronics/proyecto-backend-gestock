@@ -1,10 +1,12 @@
 package com.proyecto.gestock.customer.domain;
 
+import com.proyecto.gestock.authentication.utils.Authorization;
 import com.proyecto.gestock.customer.dto.CustomerCreateDto;
 import com.proyecto.gestock.customer.dto.CustomerResponseDto;
 import com.proyecto.gestock.customer.dto.CustomerUpdateDto;
 import com.proyecto.gestock.customer.infrastructure.CustomerRepository;
 import com.proyecto.gestock.exceptions.ResourceNotFoundException;
+import com.proyecto.gestock.exceptions.UnauthorizedOperationException;
 import com.proyecto.gestock.orderitem.domain.OrderItem;
 import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
@@ -13,6 +15,11 @@ import com.proyecto.gestock.shoppingcart.domain.ShoppingCart;
 import com.proyecto.gestock.shoppingcart.infrastructure.ShoppingCartRepository;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -21,22 +28,24 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class CustomerService {
+public class CustomerService{
     private final CustomerRepository customerRepository;
     private final ShoppingCartRepository shoppingCartRepository;
     private final PurchaseOrderRepository purchaseOrderRepository;
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
     private final ModelMapper nonNullMapper;
+    private final Authorization authorization;
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository, ProductRepository productRepository, PurchaseOrderRepository purchaseOrderRepository , ModelMapper modelMapper, ModelMapper nonNullMapper, ShoppingCartRepository shoppingCartRepository) {
+    public CustomerService(CustomerRepository customerRepository, ProductRepository productRepository, PurchaseOrderRepository purchaseOrderRepository , ModelMapper modelMapper, ModelMapper nonNullMapper, ShoppingCartRepository shoppingCartRepository, Authorization authorization) {
         this.customerRepository = customerRepository;
         this.shoppingCartRepository = shoppingCartRepository;
         this.purchaseOrderRepository = purchaseOrderRepository;
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.nonNullMapper = nonNullMapper;
+        this.authorization = authorization;
     }
 
     //--------ADMIN--------//
@@ -46,27 +55,42 @@ public class CustomerService {
     }
 
     public Customer findCustomerById(Long id) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
         return customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with id " + id + " not found"));
     }
 
     public Customer findCustomerByName(String name) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
         return customerRepository.findByName(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with name " + name + " not found"));
     }
 
     public Customer findCustomerByEmail(String email) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
         return customerRepository.findByEmail(email)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with email " + email + " not found"));
     }
 
     //----POST----//
     public Customer saveCustomer(CustomerCreateDto customerCreateDto) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
         return customerRepository.save(modelMapper.map(customerCreateDto, Customer.class));
     }
 
     //----DELETE----//
     public void deleteCustomerById(Long id) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
         if (!customerRepository.existsById(id))
             throw new ResourceNotFoundException("Customer with id " + id + " not found");
 
@@ -175,4 +199,15 @@ public class CustomerService {
 
         shoppingCartRepository.deleteById(id);
     }
+
+    @Bean(name = "CustomerDetailService")
+    public UserDetailsService userDetailsService(){
+        return name -> {
+            Customer customer = customerRepository
+                    .findByEmail(name)
+                    .orElseThrow(() ->new UsernameNotFoundException("Customer not found"));
+            return (UserDetails) customer;
+        };
+    }
+
 }

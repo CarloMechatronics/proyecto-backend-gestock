@@ -63,4 +63,8 @@ public class UserAccountService {
 
         userAccountRepository.delete(user);
     }
+
+    public UserAccount findByEmail(String email) {
+        return userAccountRepository.findByEmail(email).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+    }
 }

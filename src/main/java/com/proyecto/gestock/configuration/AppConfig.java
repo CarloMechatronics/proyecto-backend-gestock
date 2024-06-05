@@ -3,6 +3,10 @@ package com.proyecto.gestock.configuration;
 import org.modelmapper.ModelMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class AppConfig {
@@ -11,11 +15,19 @@ public class AppConfig {
         return new ModelMapper();
     }
 
-    // Bean para mappear solo atributos no nulos
+
     @Bean
     public ModelMapper nonNullMapper() {
         ModelMapper nonNullMapper = new ModelMapper();
         nonNullMapper.getConfiguration().setSkipNullEnabled(true);
         return nonNullMapper;
+    }
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }

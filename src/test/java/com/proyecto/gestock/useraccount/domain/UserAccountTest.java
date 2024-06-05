@@ -27,14 +27,14 @@ public class UserAccountTest {
         assertEquals("ADMIN", userAccount.getRole());
     }
 
-//    @Test
-//    public void testUserUpdate() {
-//        userAccount.setUsername("User 2");
-//        userAccount.setPassword("password2");
-//        userAccount.setEmail("user2@gmail.com");
-//        userAccount.setRole("ADMIN");
-//        userAccount.setUrlProfilePhoto("profile.jpg");
-//        assertEquals("User 2", userAccount.getUsername());
-//        assertEquals("password2", userAccount.getPassword());
-//    }
+    @Test
+    public void testUserUpdate() {
+        userAccount.setUsername("User 2");
+        userAccount.setPassword("password2");
+        userAccount.setEmail("user2@gmail.com");
+        userAccount.setRole("ADMIN");
+        userAccount.setUrlProfilePhoto("profile.jpg");
+        assertEquals("User 2", userAccount.getUsername());
+        assertEquals("password2", userAccount.getPassword());
+    }
 }

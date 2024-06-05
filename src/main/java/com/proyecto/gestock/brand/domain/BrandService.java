@@ -1,11 +1,13 @@
 package com.proyecto.gestock.brand.domain;
 
+import com.proyecto.gestock.authentication.utils.Authorization;
 import com.proyecto.gestock.brand.dto.BrandCreateDto;
 import com.proyecto.gestock.brand.dto.BrandDisplay;
 import com.proyecto.gestock.brand.dto.BrandDisplayDto;
 import com.proyecto.gestock.brand.dto.BrandUpdateDto;
 import com.proyecto.gestock.brand.infrastructure.BrandRepository;
 import com.proyecto.gestock.exceptions.ResourceNotFoundException;
+import com.proyecto.gestock.exceptions.UnauthorizedOperationException;
 import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.product.dto.ProductDisplayDto;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
@@ -24,33 +26,46 @@ public class BrandService {
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
     private final ModelMapper nonNullMapper;
+    private final Authorization authorization;
 
     @Autowired
-    public BrandService(BrandRepository brandRepository, ProductRepository productRepository, ModelMapper modelMapper, @Qualifier("nonNullMapper") ModelMapper nonNullMapper) {
+    public BrandService(BrandRepository brandRepository, ProductRepository productRepository, ModelMapper modelMapper, @Qualifier("nonNullMapper") ModelMapper nonNullMapper, Authorization authorization) {
         this.brandRepository = brandRepository;
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.nonNullMapper = nonNullMapper;
+        this.authorization = authorization;
     }
 
     //--------ADMIN--------//
     //----GET----//
     public List<Brand> findAllBrands() {
-        return brandRepository.findAll();
+        List<Brand> brands =  brandRepository.findAll();
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
+        return brands;
     }
 
     public Brand findBrandById(Long id) {
-        return brandRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Brand with id " + id + " not found"));
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
+        return brandRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Brand with id " + id + " not found"));
     }
 
     public List<Brand> findAllBrandsbyActive(Boolean active) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to view this product");
+        }
         return brandRepository.findAllByActive(active);
     }
 
     public List<Product> findAllBrandProductsById(Long id) {
-        Brand brand = brandRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Product with name " + id + " not found"));
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to do this action");
+        }
+        Brand brand = brandRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product with name " + id + " not found"));
 
         return brand.getProducts();
     }
@@ -58,12 +73,18 @@ public class BrandService {
     //----POST----//
     @Transactional
     public Brand saveBrand(BrandCreateDto brandCreateDto) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to do this action");
+        }
         return brandRepository.save(nonNullMapper.map(brandCreateDto, Brand.class));
     }
 
     //----PATCH----//
     @Transactional
     public Brand updateBrandById(Long id, BrandUpdateDto brandUpdateDto) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to do this action");
+        }
         Brand existingBrand = brandRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Brand with id " + id + " not found"));
         nonNullMapper.map(brandUpdateDto, existingBrand);
@@ -73,6 +94,9 @@ public class BrandService {
 
     @Transactional
     public List<Product> addBrandProductByIds(Long brandId, Long productId) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to do this action");
+        }
         Brand brand = brandRepository.findById(brandId)
                 .orElseThrow(() -> new ResourceNotFoundException("Brand with id " + brandId + " not found"));
 
@@ -87,10 +111,12 @@ public class BrandService {
     //----DELETE----//
     @Transactional
     public List<Brand> deleteBrandById(Long id) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to do this action");
+        }
         if (!brandRepository.existsById(id)) {
             throw new ResourceNotFoundException("Brand with id " + id + " not found");
         }
-
         brandRepository.deleteById(id);
 
         return brandRepository.findAll();
@@ -98,6 +124,9 @@ public class BrandService {
 
     @Transactional
     public List<Product> deleteBrandProductByIds(Long brandId, Long productId) {
+        if(!authorization.isAdmin()) {
+            throw new UnauthorizedOperationException("You are not authorized to do this action");
+        }
         Brand brand = brandRepository.findById(brandId)
                 .orElseThrow(() -> new ResourceNotFoundException("Brand with id " + brandId + " not found"));
 
