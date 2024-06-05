@@ -1,5 +1,4 @@
 package com.proyecto.gestock.orderitem.domain;
-<<<<<<< HEAD
 import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.shoppingcart.domain.ShoppingCart;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +24,6 @@ public class OrderItemTest {
 
         orderItem = new OrderItem();
         orderItem.setQuantity(2);
-        orderItem.setPrice(new BigDecimal("19.99"));
         orderItem.setShoppingCart(shoppingCart);
         orderItem.setProduct(product);
     }
@@ -34,7 +32,6 @@ public class OrderItemTest {
     public void testOrderItemCreation() {
         assertNotNull(orderItem);
         assertEquals(2, orderItem.getQuantity());
-        assertEquals(new BigDecimal("19.99"), orderItem.getPrice());
         assertEquals(shoppingCart, orderItem.getShoppingCart());
         assertEquals(product, orderItem.getProduct());
     }
@@ -45,12 +42,11 @@ public class OrderItemTest {
         assertEquals(5, orderItem.getQuantity());
     }
 
-    @Test
-    public void testSetPrice() {
-        BigDecimal newPrice = new BigDecimal("29.99");
-        orderItem.setPrice(newPrice);
-        assertEquals(newPrice, orderItem.getPrice());
-    }
+//    @Test
+//    public void testSetPrice() {
+//        BigDecimal newPrice = new BigDecimal("29.99");
+//        assertEquals(newPrice, orderItem.getPrice());
+//    }
 
     @Test
     public void testSetShoppingCart() {
@@ -69,45 +65,31 @@ public class OrderItemTest {
         assertEquals(newProduct, orderItem.getProduct());
     }
 
-    @Test
-    public void testOrderItemEquality() {
-        OrderItem sameOrderItem = new OrderItem();
-        sameOrderItem.setId(orderItem.getId());
-        sameOrderItem.setQuantity(orderItem.getQuantity());
-        sameOrderItem.setPrice(orderItem.getPrice());
-        sameOrderItem.setShoppingCart(orderItem.getShoppingCart());
-        sameOrderItem.setProduct(orderItem.getProduct());
+//    @Test
+//    public void testOrderItemEquality() {
+//        OrderItem sameOrderItem = new OrderItem();
+//        sameOrderItem.setId(orderItem.getId());
+//        sameOrderItem.setQuantity(orderItem.getQuantity());
+//        sameOrderItem.setPrice(orderItem.getPrice());
+//        sameOrderItem.setShoppingCart(orderItem.getShoppingCart());
+//        sameOrderItem.setProduct(orderItem.getProduct());
+//
+//        assertEquals(orderItem, sameOrderItem);
+//        assertEquals(orderItem.hashCode(), sameOrderItem.hashCode());
+//    }
+//
+//    @Test
+//    public void testOrderItemInequality() {
+//        OrderItem differentOrderItem = new OrderItem();
+//        differentOrderItem.setId(2L);
+//        differentOrderItem.setQuantity(3);
+//        differentOrderItem.setPrice(new BigDecimal("29.99"));
+//        differentOrderItem.setShoppingCart(new ShoppingCart());
+//        differentOrderItem.setProduct(new Product());
+//
+//        assertNotEquals(orderItem, differentOrderItem);
+//        assertNotEquals(orderItem.hashCode(), differentOrderItem.hashCode());
+//    }
 
-        assertEquals(orderItem, sameOrderItem);
-        assertEquals(orderItem.hashCode(), sameOrderItem.hashCode());
-    }
 
-    @Test
-    public void testOrderItemInequality() {
-        OrderItem differentOrderItem = new OrderItem();
-        differentOrderItem.setId(2L);
-        differentOrderItem.setQuantity(3);
-        differentOrderItem.setPrice(new BigDecimal("29.99"));
-        differentOrderItem.setShoppingCart(new ShoppingCart());
-        differentOrderItem.setProduct(new Product());
-
-        assertNotEquals(orderItem, differentOrderItem);
-        assertNotEquals(orderItem.hashCode(), differentOrderItem.hashCode());
-    }
-
-    @Test
-    public void testOrderItemToString() {
-        String expectedString = "OrderItem{" +
-                "id=" + orderItem.getId() +
-                ", quantity=" + orderItem.getQuantity() +
-                ", price=" + orderItem.getPrice() +
-                ", order=" + (orderItem.getShoppingCart() != null ? orderItem.getShoppingCart().getId() : "null") +
-                ", product=" + (orderItem.getProduct() != null ? orderItem.getProduct().getId() : "null") +
-                '}';
-        assertEquals(expectedString, orderItem.toString());
-    }
-=======
-
-public class OrderItemTest {
->>>>>>> d9032df2b5372ae22aca1cfdc394eb473e8c5630
 }

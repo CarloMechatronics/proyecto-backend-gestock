@@ -36,27 +36,20 @@ public class CustomerService{
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
     private final ModelMapper nonNullMapper;
-<<<<<<< HEAD
     private final Authorization authorization;
-
-    @Autowired
-    public CustomerService(CustomerRepository customerRepository, ProductRepository productRepository, PurchaseOrderRepository purchaseOrderRepository , ModelMapper modelMapper, ModelMapper nonNullMapper, ShoppingCartRepository shoppingCartRepository, Authorization authorization) {
-=======
     private final PurchaseOrderRepository purchaseOrderRepository;
 
+
     @Autowired
-    public CustomerService(CustomerRepository customerRepository, ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, ModelMapper modelMapper, ModelMapper nonNullMapper, PurchaseOrderRepository purchaseOrderRepository) {
->>>>>>> d9032df2b5372ae22aca1cfdc394eb473e8c5630
+    public CustomerService(Authorization authorization,CustomerRepository customerRepository, ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, ModelMapper modelMapper, ModelMapper nonNullMapper, PurchaseOrderRepository purchaseOrderRepository) {
+
         this.customerRepository = customerRepository;
         this.shoppingCartRepository = shoppingCartRepository;
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.nonNullMapper = nonNullMapper;
-<<<<<<< HEAD
         this.authorization = authorization;
-=======
         this.purchaseOrderRepository = purchaseOrderRepository;
->>>>>>> d9032df2b5372ae22aca1cfdc394eb473e8c5630
     }
 
     //--------ADMIN--------//

@@ -55,9 +55,7 @@ public class CustomerController {
         return ResponseEntity.ok(customerService.findCustomerByEmail(email));
     }
 
-<<<<<<< HEAD
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-=======
     @GetMapping("/all/name")
     public ResponseEntity<List<Customer>> getAllCustomersByNameContains(@RequestParam("name") String namePart) {
         return new ResponseEntity<>(customerService.findAllCustomersByNameContains(namePart), HttpStatus.OK);
@@ -88,21 +86,18 @@ public class CustomerController {
         return new ResponseEntity<>(customerService.findAllCustomerPurchaseOrdersById(id), HttpStatus.OK);
     }
 
->>>>>>> d9032df2b5372ae22aca1cfdc394eb473e8c5630
     @PostMapping("/all")
     public ResponseEntity<Customer> createCustomer(@RequestBody CustomerCreateDto customerCreateDto) {
         return new ResponseEntity<>(customerService.saveCustomer(customerCreateDto), HttpStatus.CREATED);
     }
 
-<<<<<<< HEAD
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-=======
     @PatchMapping("/all/{id}/update")
     public ResponseEntity<Customer> editCustomerById(@PathVariable Long id, @RequestBody CustomerUpdateDto customerUpdateDto) {
         return new ResponseEntity<>(customerService.editCustomerById(id, customerUpdateDto), HttpStatus.OK);
     }
 
->>>>>>> d9032df2b5372ae22aca1cfdc394eb473e8c5630
+
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomerById(id);
