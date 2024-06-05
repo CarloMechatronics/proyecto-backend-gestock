@@ -27,7 +27,7 @@ public class ShoppingCart {
     private Long id;
 
     @NotNull
-    @DecimalMin(value = "0.0", inclusive = false)
+    @DecimalMin(value = "0.0")
     @Column(nullable = false)
     private BigDecimal totalAmount;
 
@@ -42,6 +42,13 @@ public class ShoppingCart {
 
     @OneToOne(mappedBy = "shoppingCart")
     private PurchaseOrder purchaseOrder;
+
+    public void calculateTotalAmount() {
+        totalAmount = new BigDecimal("0.0");
+        for (OrderItem orderItem : orderItems) {
+            totalAmount = totalAmount.add(orderItem.getAmount());
+        }
+    }
 
     @Override
     public int hashCode() {

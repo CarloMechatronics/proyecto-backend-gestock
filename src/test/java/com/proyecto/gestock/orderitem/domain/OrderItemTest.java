@@ -1,2 +1,4 @@
-package com.proyecto.gestock.orderitem.domain;public class OrderItemTest {
+package com.proyecto.gestock.orderitem.domain;
+
+public class OrderItemTest {
 }

@@ -9,6 +9,7 @@ import com.proyecto.gestock.orderitem.domain.OrderItem;
 import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
 import com.proyecto.gestock.purchaseorder.domain.PurchaseOrder;
+import com.proyecto.gestock.purchaseorder.infrastructure.PurchaseOrderRepository;
 import com.proyecto.gestock.shoppingcart.domain.ShoppingCart;
 import com.proyecto.gestock.shoppingcart.infrastructure.ShoppingCartRepository;
 import org.modelmapper.ModelMapper;
@@ -28,14 +29,16 @@ public class CustomerService {
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
     private final ModelMapper nonNullMapper;
+    private final PurchaseOrderRepository purchaseOrderRepository;
 
     @Autowired
-    public CustomerService(CustomerRepository customerRepository, ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, ModelMapper modelMapper, ModelMapper nonNullMapper) {
+    public CustomerService(CustomerRepository customerRepository, ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, ModelMapper modelMapper, ModelMapper nonNullMapper, PurchaseOrderRepository purchaseOrderRepository) {
         this.customerRepository = customerRepository;
         this.shoppingCartRepository = shoppingCartRepository;
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.nonNullMapper = nonNullMapper;
+        this.purchaseOrderRepository = purchaseOrderRepository;
     }
 
     //--------ADMIN--------//
@@ -71,6 +74,28 @@ public class CustomerService {
     @Transactional(readOnly = true)
     public List<Customer> findAllCustomersByEmailContains(String emailPart) {
         return customerRepository.findAllByEmailContains(emailPart);
+    }
+
+    @Transactional(readOnly = true)
+    public ShoppingCart findCustomerShoppingCartByIds(Long customerId, Long shoppingCartId) {
+        ShoppingCart existingShoppingCart = shoppingCartRepository.findById(shoppingCartId)
+                .orElseThrow(() -> new ResourceNotFoundException("Shopping Cart with id " + shoppingCartId + " not found"));
+
+        if (!existingShoppingCart.getCustomer().getId().equals(customerId))
+            throw new ResourceNotFoundException("Shopping Cart with id " + customerId + " not found");
+
+        return existingShoppingCart;
+    }
+
+    @Transactional(readOnly = true)
+    public PurchaseOrder findCustomerPurchaseOrderByIds(Long customerId, Long purchaseOrderId) {
+        PurchaseOrder existingPurchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Purchase Order with id " + purchaseOrderId + " not found"));
+
+        if (!existingPurchaseOrder.getCustomer().getId().equals(customerId))
+            throw new ResourceNotFoundException("Purchase Order with id " + purchaseOrderId + " not found");
+
+        return existingPurchaseOrder;
     }
 
     @Transactional(readOnly = true)
@@ -137,7 +162,7 @@ public class CustomerService {
                 .orElseThrow(() -> new ResourceNotFoundException("Shopping Cart with " + id + " not found"));
 
         return shoppingCart.getOrderItems().stream()
-                .map(orderItem -> orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())))
+                .map(orderItem -> orderItem.getAmount().multiply(new BigDecimal(orderItem.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
@@ -153,7 +178,7 @@ public class CustomerService {
         List<OrderItem> orderItems = products.stream().map(product -> {
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(product);
-            orderItem.setPrice(product.getPrice());
+            orderItem.setAmount(product.getPrice());
             orderItem.setQuantity(1);
             orderItem.setShoppingCart(shoppingCart);
             return orderItem;
@@ -186,7 +211,7 @@ public class CustomerService {
         List<OrderItem> orderItems = products.stream().map(product -> {
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(product);
-            orderItem.setPrice(product.getPrice());
+            orderItem.setAmount(product.getPrice());
             orderItem.setQuantity(1);
             orderItem.setShoppingCart(shoppingCart);
             return orderItem;

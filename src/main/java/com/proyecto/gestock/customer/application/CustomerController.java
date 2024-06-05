@@ -61,6 +61,16 @@ public class CustomerController {
         return new ResponseEntity<>(customerService.findAllCustomersByEmailContains(emailPart), HttpStatus.OK);
     }
 
+    @GetMapping("/all/{customerId}/shopping-carts/{shoppingCartId}")
+    public ResponseEntity<ShoppingCart> getCustomerShoppingCartById(@PathVariable Long customerId, @PathVariable Long shoppingCartId) {
+        return new ResponseEntity<>(customerService.findCustomerShoppingCartByIds(customerId, shoppingCartId), HttpStatus.OK);
+    }
+
+    @GetMapping("/all/{customerId}/purchase-orders/{purchaseOrderId}")
+    public ResponseEntity<PurchaseOrder> getCustomerShoppingOrderById(@PathVariable Long customerId, @PathVariable Long purchaseOrderId) {
+        return new ResponseEntity<>(customerService.findCustomerPurchaseOrderByIds(customerId, purchaseOrderId), HttpStatus.OK);
+    }
+
     @GetMapping("/all/{id}/shopping-carts")
     public ResponseEntity<List<ShoppingCart>> getAllCustomerShoppingCartsById(@PathVariable Long id) {
         return new ResponseEntity<>(customerService.findAllCustomerShoppingCartsById(id), HttpStatus.OK);

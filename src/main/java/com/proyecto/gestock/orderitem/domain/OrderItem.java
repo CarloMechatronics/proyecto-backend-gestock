@@ -33,7 +33,7 @@ public class OrderItem {
     @NotNull
     @DecimalMin(value = "0.0", inclusive = false)
     @Column(nullable = false)
-    private BigDecimal price;
+    private BigDecimal amount;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "shoppingCart_id", nullable = false)
@@ -42,6 +42,10 @@ public class OrderItem {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
+
+    public void calculateAmount() {
+        amount = product.getPrice().add(BigDecimal.valueOf(quantity));
+    }
 
     @Override
     public int hashCode() {
@@ -61,7 +65,7 @@ public class OrderItem {
         return "OrderItem{" +
                 "id=" + id +
                 ", quantity=" + quantity +
-                ", price=" + price +
+                ", amount=" + amount +
                 ", order=" + (shoppingCart != null ? shoppingCart.getId() : "null") +
                 ", product=" + (product != null ? product.getId() : "null") +
                 '}';
