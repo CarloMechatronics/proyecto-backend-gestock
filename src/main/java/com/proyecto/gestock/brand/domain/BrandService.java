@@ -39,6 +39,7 @@ public class BrandService {
 
     //--------ADMIN--------//
     //----GET----//
+    @Transactional(readOnly = true)
     public List<Brand> findAllBrands() {
         List<Brand> brands =  brandRepository.findAll();
         if(!authorization.isAdmin()) {
@@ -47,6 +48,7 @@ public class BrandService {
         return brands;
     }
 
+    @Transactional(readOnly = true)
     public Brand findBrandById(Long id) {
         if(!authorization.isAdmin()) {
             throw new UnauthorizedOperationException("You are not authorized to view this product");
@@ -54,6 +56,7 @@ public class BrandService {
         return brandRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Brand with id " + id + " not found"));
     }
 
+    @Transactional(readOnly = true)
     public List<Brand> findAllBrandsbyActive(Boolean active) {
         if(!authorization.isAdmin()) {
             throw new UnauthorizedOperationException("You are not authorized to view this product");
@@ -61,6 +64,7 @@ public class BrandService {
         return brandRepository.findAllByActive(active);
     }
 
+    @Transactional(readOnly = true)
     public List<Product> findAllBrandProductsById(Long id) {
         if(!authorization.isAdmin()) {
             throw new UnauthorizedOperationException("You are not authorized to do this action");
@@ -145,6 +149,7 @@ public class BrandService {
 
 
     //--------ANYONE--------//
+    @Transactional(readOnly = true)
     public List<BrandDisplayDto> findAllActiveBrands() {
         List<BrandDisplay> brandDisplayList = brandRepository.findAllByActiveTrue();
         return brandDisplayList.stream()
@@ -152,6 +157,7 @@ public class BrandService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<BrandDisplayDto> findAllActiveBrandsByNameContains(String namePart) {
         List<BrandDisplay> brandDisplayList = brandRepository.findAllByNameContainsAndActiveTrue(namePart);
         return brandDisplayList.stream()
@@ -159,6 +165,7 @@ public class BrandService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<ProductDisplayDto> findAllBrandProductsDisplayDto(String name) {
         Brand brand = brandRepository.findByNameAndActiveTrue(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Brand with name " + name + " not found"));

@@ -29,8 +29,9 @@ public class PurchaseOrder {
     private LocalDateTime orderDate;
 
     @NotNull
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String status;
+    private Status status;
 
     @OneToOne
     private ShoppingCart shoppingCart;

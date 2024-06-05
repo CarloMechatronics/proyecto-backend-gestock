@@ -1,4 +1,5 @@
 package com.proyecto.gestock.orderitem.domain;
+<<<<<<< HEAD
 import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.shoppingcart.domain.ShoppingCart;
 import org.junit.jupiter.api.BeforeEach;
@@ -105,4 +106,8 @@ public class OrderItemTest {
                 '}';
         assertEquals(expectedString, orderItem.toString());
     }
+=======
+
+public class OrderItemTest {
+>>>>>>> d9032df2b5372ae22aca1cfdc394eb473e8c5630
 }

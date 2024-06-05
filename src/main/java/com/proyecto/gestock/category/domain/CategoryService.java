@@ -41,10 +41,12 @@ public class CategoryService {
 
     //--------ADMIN--------//
     //----GET----//
+    @Transactional(readOnly = true)
     public List<Category> findAllCategories() {
         return categoryRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Category findCategoryById(Long id) {
         if(!authorization.isAdmin()) {
             throw new UnauthorizedOperationException("You are not authorized to view this product");
@@ -53,6 +55,7 @@ public class CategoryService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<Product> findAllCategoryProductsById(Long id) {
         if(!authorization.isAdmin()) {
             throw new UnauthorizedOperationException("You are not authorized to view this product");
@@ -138,6 +141,7 @@ public class CategoryService {
 
 
     //--------ANYONE--------//
+    @Transactional(readOnly = true)
     public List<CategoryDisplayDto> findAllCategoriesByIdNotNull() {
         List<CategoryDisplay> categoryDisplayList = categoryRepository.findAllByIdNotNull();
 
@@ -146,6 +150,7 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<CategoryDisplayDto> findAllCategoriesByNameContains(String namePart) {
         List<CategoryDisplay> categoryDisplayList = categoryRepository.findAllByNameContains(namePart);
 
@@ -154,6 +159,7 @@ public class CategoryService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<ProductDisplayDto> findAllCategoryProductsByName(String name) {
         Category category = categoryRepository.findByName(name)
                 .orElseThrow(() -> new ResourceNotFoundException("Category with name " + name + " not found"));

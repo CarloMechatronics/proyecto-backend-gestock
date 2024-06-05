@@ -10,6 +10,7 @@ import com.proyecto.gestock.exceptions.UnauthorizedOperationException;
 import com.proyecto.gestock.orderitem.domain.OrderItem;
 import com.proyecto.gestock.product.domain.Product;
 import com.proyecto.gestock.product.infrastructure.ProductRepository;
+import com.proyecto.gestock.purchaseorder.domain.PurchaseOrder;
 import com.proyecto.gestock.purchaseorder.infrastructure.PurchaseOrderRepository;
 import com.proyecto.gestock.shoppingcart.domain.ShoppingCart;
 import com.proyecto.gestock.shoppingcart.infrastructure.ShoppingCartRepository;
@@ -21,6 +22,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -31,29 +33,40 @@ import java.util.stream.Collectors;
 public class CustomerService{
     private final CustomerRepository customerRepository;
     private final ShoppingCartRepository shoppingCartRepository;
-    private final PurchaseOrderRepository purchaseOrderRepository;
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
     private final ModelMapper nonNullMapper;
+<<<<<<< HEAD
     private final Authorization authorization;
 
     @Autowired
     public CustomerService(CustomerRepository customerRepository, ProductRepository productRepository, PurchaseOrderRepository purchaseOrderRepository , ModelMapper modelMapper, ModelMapper nonNullMapper, ShoppingCartRepository shoppingCartRepository, Authorization authorization) {
+=======
+    private final PurchaseOrderRepository purchaseOrderRepository;
+
+    @Autowired
+    public CustomerService(CustomerRepository customerRepository, ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, ModelMapper modelMapper, ModelMapper nonNullMapper, PurchaseOrderRepository purchaseOrderRepository) {
+>>>>>>> d9032df2b5372ae22aca1cfdc394eb473e8c5630
         this.customerRepository = customerRepository;
         this.shoppingCartRepository = shoppingCartRepository;
-        this.purchaseOrderRepository = purchaseOrderRepository;
         this.productRepository = productRepository;
         this.modelMapper = modelMapper;
         this.nonNullMapper = nonNullMapper;
+<<<<<<< HEAD
         this.authorization = authorization;
+=======
+        this.purchaseOrderRepository = purchaseOrderRepository;
+>>>>>>> d9032df2b5372ae22aca1cfdc394eb473e8c5630
     }
 
     //--------ADMIN--------//
     //----GET----//
+    @Transactional(readOnly = true)
     public List<Customer> findAllCustomers() {
         return customerRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Customer findCustomerById(Long id) {
         if(!authorization.isAdmin()) {
             throw new UnauthorizedOperationException("You are not authorized to view this product");
@@ -62,6 +75,7 @@ public class CustomerService{
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with id " + id + " not found"));
     }
 
+    @Transactional(readOnly = true)
     public Customer findCustomerByName(String name) {
         if(!authorization.isAdmin()) {
             throw new UnauthorizedOperationException("You are not authorized to view this product");
@@ -70,6 +84,7 @@ public class CustomerService{
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with name " + name + " not found"));
     }
 
+    @Transactional(readOnly = true)
     public Customer findCustomerByEmail(String email) {
         if(!authorization.isAdmin()) {
             throw new UnauthorizedOperationException("You are not authorized to view this product");
@@ -78,7 +93,54 @@ public class CustomerService{
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with email " + email + " not found"));
     }
 
+    @Transactional(readOnly = true)
+    public List<Customer> findAllCustomersByNameContains(String namePart) {
+        return customerRepository.findAllByNameContains(namePart);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Customer> findAllCustomersByEmailContains(String emailPart) {
+        return customerRepository.findAllByEmailContains(emailPart);
+    }
+
+    @Transactional(readOnly = true)
+    public ShoppingCart findCustomerShoppingCartByIds(Long customerId, Long shoppingCartId) {
+        ShoppingCart existingShoppingCart = shoppingCartRepository.findById(shoppingCartId)
+                .orElseThrow(() -> new ResourceNotFoundException("Shopping Cart with id " + shoppingCartId + " not found"));
+
+        if (!existingShoppingCart.getCustomer().getId().equals(customerId))
+            throw new ResourceNotFoundException("Shopping Cart with id " + customerId + " not found");
+
+        return existingShoppingCart;
+    }
+
+    @Transactional(readOnly = true)
+    public PurchaseOrder findCustomerPurchaseOrderByIds(Long customerId, Long purchaseOrderId) {
+        PurchaseOrder existingPurchaseOrder = purchaseOrderRepository.findById(purchaseOrderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Purchase Order with id " + purchaseOrderId + " not found"));
+
+        if (!existingPurchaseOrder.getCustomer().getId().equals(customerId))
+            throw new ResourceNotFoundException("Purchase Order with id " + purchaseOrderId + " not found");
+
+        return existingPurchaseOrder;
+    }
+
+    @Transactional(readOnly = true)
+    public List<ShoppingCart> findAllCustomerShoppingCartsById(Long id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with id " + id + " not found"))
+                .getShoppingCarts();
+    }
+
+    @Transactional(readOnly = true)
+    public List<PurchaseOrder> findAllCustomerPurchaseOrdersById(Long id) {
+        return customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with id " + id + " not found"))
+                .getPurchaseOrders();
+    }
+
     //----POST----//
+    @Transactional
     public Customer saveCustomer(CustomerCreateDto customerCreateDto) {
         if(!authorization.isAdmin()) {
             throw new UnauthorizedOperationException("You are not authorized to view this product");
@@ -86,7 +148,18 @@ public class CustomerService{
         return customerRepository.save(modelMapper.map(customerCreateDto, Customer.class));
     }
 
+    //----PATCH----//
+    @Transactional
+    public Customer editCustomerById(Long id, CustomerUpdateDto customerUpdateDto) {
+        Customer existingCustomer = customerRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Customer with id " + id + " not found"));
+        nonNullMapper.map(customerUpdateDto, existingCustomer);
+
+        return customerRepository.save(existingCustomer);
+    }
+
     //----DELETE----//
+    @Transactional
     public void deleteCustomerById(Long id) {
         if(!authorization.isAdmin()) {
             throw new UnauthorizedOperationException("You are not authorized to view this product");
@@ -99,6 +172,8 @@ public class CustomerService{
 
 
     //--------ANYONE--------//
+    //----POST----//
+    @Transactional
     public CustomerResponseDto registerCustomer(CustomerCreateDto customerCreateDto) {
         Customer customer = customerRepository.save(modelMapper.map(customerCreateDto, Customer.class));
 
@@ -108,21 +183,24 @@ public class CustomerService{
 
     //--------CUSTOMER--------//
     //----GET----//
+    @Transactional(readOnly = true)
     public ShoppingCart findShoppingCartById(Long id) {
         return shoppingCartRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Shopping cart with id " + id + " not foun"));
     }
 
+    @Transactional(readOnly = true)
     public BigDecimal findTotalAmountById(Long id) {
         ShoppingCart shoppingCart = shoppingCartRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Shopping Cart with " + id + " not found"));
 
         return shoppingCart.getOrderItems().stream()
-                .map(orderItem -> orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity())))
+                .map(orderItem -> orderItem.getAmount().multiply(new BigDecimal(orderItem.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
     }
 
     //----POST----//
+    @Transactional
     public ShoppingCart createShoppingCartByIds(Long customerId, List<Long> productIds) {
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer not found"));
@@ -133,7 +211,7 @@ public class CustomerService{
         List<OrderItem> orderItems = products.stream().map(product -> {
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(product);
-            orderItem.setPrice(product.getPrice());
+            orderItem.setAmount(product.getPrice());
             orderItem.setQuantity(1);
             orderItem.setShoppingCart(shoppingCart);
             return orderItem;
@@ -145,6 +223,7 @@ public class CustomerService{
     }
 
     //----PATCH----//
+    @Transactional
     public CustomerResponseDto updateCustomerById(Long id, CustomerUpdateDto customerUpdateDto) {
         Customer existing = customerRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Customer with id " + id + " not found"));
@@ -156,7 +235,7 @@ public class CustomerService{
         return modelMapper.map(existing, CustomerResponseDto.class);
     }
 
-
+    @Transactional
     public ShoppingCart updateShoppingCartByIds(Long id, List<Long> productIds) {
         ShoppingCart shoppingCart = shoppingCartRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Shopping Cart with id " + id + " not found"));
@@ -165,7 +244,7 @@ public class CustomerService{
         List<OrderItem> orderItems = products.stream().map(product -> {
             OrderItem orderItem = new OrderItem();
             orderItem.setProduct(product);
-            orderItem.setPrice(product.getPrice());
+            orderItem.setAmount(product.getPrice());
             orderItem.setQuantity(1);
             orderItem.setShoppingCart(shoppingCart);
             return orderItem;
@@ -175,6 +254,7 @@ public class CustomerService{
         return shoppingCartRepository.save(shoppingCart);
     }
 
+    @Transactional
     public ShoppingCart updateShoppingCartItemQuantityByIds(Long cartId, Long productId, Integer quantity) {
         ShoppingCart shoppingCart = shoppingCartRepository.findById(cartId)
                 .orElseThrow(() -> new ResourceNotFoundException("Shopping Cart with id " + cartId + " not found"));
@@ -193,6 +273,7 @@ public class CustomerService{
     }
 
     //----DELETE----//
+    @Transactional
     public void deleteShoppingCartById(Long id) {
         if (!shoppingCartRepository.existsById(id))
             throw new ResourceNotFoundException("Shopping Cart with id " + id + " not found");

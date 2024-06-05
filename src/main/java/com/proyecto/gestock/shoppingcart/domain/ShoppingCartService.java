@@ -6,6 +6,7 @@ import com.proyecto.gestock.exceptions.UnauthorizedOperationException;
 import com.proyecto.gestock.shoppingcart.infrastructure.ShoppingCartRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,10 +23,12 @@ public class ShoppingCartService {
 
     //--------ADMIN--------//
     //----GET----//
+    @Transactional(readOnly = true)
     public List<ShoppingCart> findAllShoppingCarts() {
         return shoppingCartRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public ShoppingCart findShoppingCartById(Long id) {
         if(!authorization.isAdmin()) {
             throw new UnauthorizedOperationException("You are not authorized to view this product");
@@ -35,6 +38,7 @@ public class ShoppingCartService {
     }
 
     //----DELETE----//
+    @Transactional
     public void deleteShoppingCartById(Long id) {
         if(!authorization.isAdmin()) {
             throw new UnauthorizedOperationException("You are not authorized to view this product");

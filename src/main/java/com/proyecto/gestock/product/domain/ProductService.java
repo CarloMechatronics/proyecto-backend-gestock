@@ -41,10 +41,12 @@ public class ProductService {
 
     //-------ADMIN--------//
     //----GET----//
+    @Transactional(readOnly = true)
     public List<Product> findAllProducts() {
         return productRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     public Product findProductById(Long id) {
         Product product =  productRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Product with id " + id + " not found"));
         if(!authorization.isAdmin()) {
@@ -53,6 +55,7 @@ public class ProductService {
         return product;
     }
 
+    @Transactional(readOnly = true)
     public List<Product> findAllProductsByNameContains(String namePart) {
         List<Product> products = productRepository.findAllByNameContains(namePart);
         if(!authorization.isAdmin()) {
@@ -61,6 +64,7 @@ public class ProductService {
         return products;
     }
 
+    @Transactional(readOnly = true)
     public List<Product> findAllProductsByPriceRange(BigDecimal min, BigDecimal max) {
         List<Product> products = productRepository.findAllByPriceGreaterThanEqualAndPriceLessThanEqual(min, max);
         if(!authorization.isAdmin()) {
@@ -69,6 +73,7 @@ public class ProductService {
         return products;
     }
 
+    @Transactional(readOnly = true)
     public List<Product> findAllProductsByStockGreaterThanEqual(Integer stock) {
         List<Product> products = productRepository.findAllByStockGreaterThanEqual(stock);
         if(!authorization.isAdmin()) {
@@ -77,6 +82,7 @@ public class ProductService {
         return products;
     }
 
+    @Transactional(readOnly = true)
     public List<Product> findAllProductsByStockLessThanEqual(Integer stock) {
         List<Product> products =  productRepository.findAllByStockLessThanEqual(stock);
         if(!authorization.isAdmin()) {
@@ -146,12 +152,14 @@ public class ProductService {
 
 
     //--------ANYONE--------//
+    @Transactional(readOnly = true)
     public ProductInfoDto findValidProductByName(String name) {
         ProductInfo productInfo = productRepository.findByNameAndStockGreaterThanEqual(name, 0).orElseThrow(() -> new ResourceNotFoundException("Product with name '" + name + "' not found"));
 
         return modelMapper.map(productInfo, ProductInfoDto.class);
     }
 
+    @Transactional(readOnly = true)
     public List<ProductDisplayDto> findAllValidProductsByNameContains(String namePart) {
         List<ProductDisplay> productDisplayList = productRepository
                 .findAllByNameContainsAndStockGreaterThanEqual(namePart, 0);
@@ -161,6 +169,7 @@ public class ProductService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public List<ProductDisplayDto> findAllValidProductByPriceRange(String namePart, BigDecimal min, BigDecimal max) {
         List<ProductDisplay> productDisplayList = productRepository
                 .findAllByNameContainsAndPriceGreaterThanEqualAndPriceLessThanEqualAndStockGreaterThanEqual(namePart, min, max, 0);
