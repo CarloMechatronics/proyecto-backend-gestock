@@ -11,7 +11,7 @@ ___
 | Nombre           | Email                                                            |
 |------------------|------------------------------------------------------------------|
 | Santiago Cama    | [santiago.cama@utec.edu.pe](mailto:santiago.cama@utec.edu.pe)    |
-| Guillermo Galvez | [jose.galvez.p@utec.edu.pe](mailto:jose.galvez.p@utec.edu.pe)    |
+| Carlo Torres     | [carlo.torres@utec.edu.pe](mailto:carlo.torres@utec.edu.pe)      |
 
 <br>
 
