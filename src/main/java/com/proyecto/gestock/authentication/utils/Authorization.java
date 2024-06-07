@@ -13,45 +13,44 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class Authorization {
+
     private final CustomerService customerService;
     private final UserAccountService userAccountService;
 
     @Autowired
-    public Authorization(@Lazy CustomerService customerService,@Lazy UserAccountService userAccountService) {
+    public Authorization(@Lazy CustomerService customerService, @Lazy UserAccountService userAccountService) {
         this.customerService = customerService;
         this.userAccountService = userAccountService;
     }
 
     public boolean isAdmin() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(authentication.getPrincipal() instanceof UserDetails) {
+        if (authentication.getPrincipal() instanceof UserDetails) {
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
             String username = userDetails.getUsername();
             UserAccount userAccount = userAccountService.findByEmail(username);
-            return userAccount != null && userAccount.getRole().equals("ADMIN");
+            return userAccount != null && "ADMIN".equals(userAccount.getRole());
         }
         return false;
     }
 
-//    public boolean isCustomer() {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        if(authentication.getPrincipal() instanceof UserDetails) {
-//            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-//            String username = userDetails.getUsername();
-//            Customer customer = customerService.findCustomerByEmail(username);
-//            return customer != null;
-//        }
-//        return false;
-//    }
-//
-//    public String getCurrentUserEmail(){
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        try {
-//            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
-//            return userDetails.getUsername();
-//        } catch (ClassCastException e) {
-//            return null;
-//        }
-//    }
+    public boolean isCustomer() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            String username = userDetails.getUsername();
+            Customer customer = customerService.findCustomerByEmail(username);
+            return customer != null;
+        }
+        return false;
+    }
 
+    public String getCurrentUserEmail() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication.getPrincipal() instanceof UserDetails) {
+            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+            return userDetails.getUsername();
+        }
+        return null;
+    }
 }

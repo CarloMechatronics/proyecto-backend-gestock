@@ -31,6 +31,7 @@ public class CustomerController {
         this.customerService = customerService;
     }
 
+    //--------ADMIN--------//
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     @GetMapping("/all")
     public ResponseEntity<List<Customer>> getAllCustomers() {
@@ -38,81 +39,83 @@ public class CustomerController {
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/all/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<Customer> getCustomerById(@PathVariable Long id) {
         return ResponseEntity.ok(customerService.findCustomerById(id));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/all/name/{name}/")
+    @GetMapping("/name/{name}")
     public ResponseEntity<Customer> getCustomerByName(@PathVariable String name) {
         return ResponseEntity.ok(customerService.findCustomerByName(name));
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/all/email/{email}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/email/{email}")
     public ResponseEntity<Customer> getCustomerByEmail(@PathVariable String email) {
         return ResponseEntity.ok(customerService.findCustomerByEmail(email));
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @GetMapping("/all/name")
+    @GetMapping("/search/name")
     public ResponseEntity<List<Customer>> getAllCustomersByNameContains(@RequestParam("name") String namePart) {
         return new ResponseEntity<>(customerService.findAllCustomersByNameContains(namePart), HttpStatus.OK);
     }
 
-    @GetMapping("/all/email")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/search/email")
     public ResponseEntity<List<Customer>> getAllCustomersByEmailContains(@RequestParam("email") String emailPart) {
         return new ResponseEntity<>(customerService.findAllCustomersByEmailContains(emailPart), HttpStatus.OK);
     }
 
-    @GetMapping("/all/{customerId}/shopping-carts/{shoppingCartId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/{customerId}/shopping-carts/{shoppingCartId}")
     public ResponseEntity<ShoppingCart> getCustomerShoppingCartById(@PathVariable Long customerId, @PathVariable Long shoppingCartId) {
         return new ResponseEntity<>(customerService.findCustomerShoppingCartByIds(customerId, shoppingCartId), HttpStatus.OK);
     }
 
-    @GetMapping("/all/{customerId}/purchase-orders/{purchaseOrderId}")
-    public ResponseEntity<PurchaseOrder> getCustomerShoppingOrderById(@PathVariable Long customerId, @PathVariable Long purchaseOrderId) {
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/{customerId}/purchase-orders/{purchaseOrderId}")
+    public ResponseEntity<PurchaseOrder> getCustomerPurchaseOrderById(@PathVariable Long customerId, @PathVariable Long purchaseOrderId) {
         return new ResponseEntity<>(customerService.findCustomerPurchaseOrderByIds(customerId, purchaseOrderId), HttpStatus.OK);
     }
 
-    @GetMapping("/all/{id}/shopping-carts")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/{id}/shopping-carts")
     public ResponseEntity<List<ShoppingCart>> getAllCustomerShoppingCartsById(@PathVariable Long id) {
         return new ResponseEntity<>(customerService.findAllCustomerShoppingCartsById(id), HttpStatus.OK);
     }
 
-    @GetMapping("/all/{id}/purchase-orders")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @GetMapping("/{id}/purchase-orders")
     public ResponseEntity<List<PurchaseOrder>> getAllCustomerPurchaseOrdersById(@PathVariable Long id) {
         return new ResponseEntity<>(customerService.findAllCustomerPurchaseOrdersById(id), HttpStatus.OK);
     }
 
-    @PostMapping("/all")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PostMapping
     public ResponseEntity<Customer> createCustomer(@RequestBody CustomerCreateDto customerCreateDto) {
         return new ResponseEntity<>(customerService.saveCustomer(customerCreateDto), HttpStatus.CREATED);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    @PatchMapping("/all/{id}/update")
+    @PatchMapping("/{id}/update")
     public ResponseEntity<Customer> editCustomerById(@PathVariable Long id, @RequestBody CustomerUpdateDto customerUpdateDto) {
         return new ResponseEntity<>(customerService.editCustomerById(id, customerUpdateDto), HttpStatus.OK);
     }
 
-
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @DeleteMapping("/{id}/delete")
     public ResponseEntity<Void> deleteCustomer(@PathVariable Long id) {
         customerService.deleteCustomerById(id);
-
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     //--------ANYONE--------//
-    @PreAuthorize("permitAll()")
-    @PostMapping
+    @PostMapping("/register")
     public ResponseEntity<CustomerResponseDto> registerCustomer(@RequestBody CustomerCreateDto customerCreateDto) {
         return new ResponseEntity<>(customerService.registerCustomer(customerCreateDto), HttpStatus.CREATED);
     }
-
-
 
     //--------CUSTOMER--------//
     @PreAuthorize("hasRole('ROLE_USER')")
@@ -155,6 +158,6 @@ public class CustomerController {
     @DeleteMapping("/orders/{id}")
     public ResponseEntity<Void> deleteShoppingCartById(@PathVariable Long id) {
         customerService.deleteShoppingCartById(id);
-        return new ResponseEntity<>(HttpStatus.CREATED);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

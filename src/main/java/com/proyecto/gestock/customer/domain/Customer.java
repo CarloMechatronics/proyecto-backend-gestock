@@ -39,8 +39,8 @@ public class Customer implements UserDetails {
     @Column(unique = true, nullable = false)
     private String email;
 
-    @NotBlank
-    @Size(min = 8, max = 20)
+    @NotNull
+    @Size(min = 3)
     @Column(nullable = false)
     private String password;
 

@@ -29,12 +29,10 @@ public class ShoppingCartTest {
 
         OrderItem item1 = new OrderItem();
         item1.setId(1L);
-        item1.setPrice(new BigDecimal("50.00"));
         item1.setQuantity(1);
 
         OrderItem item2 = new OrderItem();
         item2.setId(2L);
-        item2.setPrice(new BigDecimal("50.00"));
         item2.setQuantity(1);
 
         shoppingCart.setOrderItems(Arrays.asList(item1, item2));

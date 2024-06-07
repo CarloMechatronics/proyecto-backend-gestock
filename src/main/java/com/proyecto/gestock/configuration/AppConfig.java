@@ -12,9 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 public class AppConfig {
     @Bean
     public ModelMapper modelMapper() {
-        return new ModelMapper();
+    return new ModelMapper();
     }
-
 
     @Bean
     public ModelMapper nonNullMapper() {
@@ -22,10 +21,12 @@ public class AppConfig {
         nonNullMapper.getConfiguration().setSkipNullEnabled(true);
         return nonNullMapper;
     }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();

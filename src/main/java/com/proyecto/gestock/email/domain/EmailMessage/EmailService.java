@@ -15,9 +15,7 @@ import java.nio.charset.StandardCharsets;
 
 @Service
 public class EmailService {
-
     private final JavaMailSender mailSender;
-
     private final SpringTemplateEngine templateEngine;
 
     @Autowired
@@ -25,7 +23,6 @@ public class EmailService {
         this.mailSender = mailSender;
         this.templateEngine = templateEngine;
     }
-
     public void correoSing(String to, String name) throws MessagingException {
         Context context = new Context();
         context.setVariable("name", name);

@@ -5,13 +5,18 @@ import com.proyecto.gestock.authentication.dto.LogInDTO;
 import com.proyecto.gestock.authentication.dto.SignInDTO;
 import com.proyecto.gestock.configuration.JwtService;
 import com.proyecto.gestock.customer.domain.Customer;
+import com.proyecto.gestock.customer.domain.CustomerService;
 import com.proyecto.gestock.customer.infrastructure.CustomerRepository;
 import com.proyecto.gestock.evento.SingingEvent.CustomerRegisteredEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AuthenticationService {
@@ -52,6 +57,7 @@ public class AuthenticationService {
         customer.setName(signInDTO.getName());
         customer.setRegistrationDate(signInDTO.getRegistrationDate());
         customerRepository.save(customer);
+
         JwtAuthenticationResponseDTO responseDTO = new JwtAuthenticationResponseDTO();
         responseDTO.setToken(jwtService.generateToken(customer));
         return responseDTO;

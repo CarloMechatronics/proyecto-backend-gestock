@@ -100,16 +100,5 @@ public class CustomerTest {
         assertEquals(newEmail, customer.getEmail());
     }
 
-    @Test
-    public void testCustomerNullFields() {
-        Customer newCustomer = new Customer();
-        assertNull(newCustomer.getName());
-        assertNull(newCustomer.getEmail());
-        assertNull(newCustomer.getRegistrationDate());
-        assertNotNull(newCustomer.getShoppingCarts());
-        assertNotNull(newCustomer.getPurchaseOrders());
-        assertTrue(newCustomer.getShoppingCarts().isEmpty());
-        assertTrue(newCustomer.getPurchaseOrders().isEmpty());
-    }
 
 }

@@ -1,6 +1,10 @@
 package com.proyecto.gestock.customer.domain;
 
+import com.proyecto.gestock.authentication.dto.JwtAuthenticationResponseDTO;
+import com.proyecto.gestock.authentication.dto.LogInDTO;
+import com.proyecto.gestock.authentication.dto.SignInDTO;
 import com.proyecto.gestock.authentication.utils.Authorization;
+import com.proyecto.gestock.configuration.JwtService;
 import com.proyecto.gestock.customer.dto.CustomerCreateDto;
 import com.proyecto.gestock.customer.dto.CustomerResponseDto;
 import com.proyecto.gestock.customer.dto.CustomerUpdateDto;
@@ -14,13 +18,16 @@ import com.proyecto.gestock.purchaseorder.domain.PurchaseOrder;
 import com.proyecto.gestock.purchaseorder.infrastructure.PurchaseOrderRepository;
 import com.proyecto.gestock.shoppingcart.domain.ShoppingCart;
 import com.proyecto.gestock.shoppingcart.infrastructure.ShoppingCartRepository;
+import com.proyecto.gestock.useraccount.domain.UserAccount;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,19 +37,20 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class CustomerService{
+public class CustomerService implements UserDetailsService{
     private final CustomerRepository customerRepository;
     private final ShoppingCartRepository shoppingCartRepository;
     private final ProductRepository productRepository;
     private final ModelMapper modelMapper;
+    private final JwtService jwtService;
     private final ModelMapper nonNullMapper;
     private final Authorization authorization;
     private final PurchaseOrderRepository purchaseOrderRepository;
-
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public CustomerService(Authorization authorization,CustomerRepository customerRepository, ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, ModelMapper modelMapper, ModelMapper nonNullMapper, PurchaseOrderRepository purchaseOrderRepository) {
-
+    public CustomerService(Authorization authorization, CustomerRepository customerRepository, ShoppingCartRepository shoppingCartRepository, ProductRepository productRepository, ModelMapper modelMapper, ModelMapper nonNullMapper, PurchaseOrderRepository purchaseOrderRepository, PasswordEncoder passwordEncoder, JwtService jwtService) {
+        this.jwtService = jwtService;
         this.customerRepository = customerRepository;
         this.shoppingCartRepository = shoppingCartRepository;
         this.productRepository = productRepository;
@@ -50,7 +58,51 @@ public class CustomerService{
         this.nonNullMapper = nonNullMapper;
         this.authorization = authorization;
         this.purchaseOrderRepository = purchaseOrderRepository;
+        this.passwordEncoder = passwordEncoder;
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        Customer customer = customerRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found with email: " + email));
+        return new User(customer.getEmail(), customer.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
+    }
+
+    public UserDetails loadUserByEmail(String email) {
+        return loadUserByUsername(email);
+    }
+
+    public JwtAuthenticationResponseDTO login(LogInDTO logInDTO) {
+        Customer customer = customerRepository.findByEmail(logInDTO.getEmail())
+                .orElseThrow(() -> new UsernameNotFoundException("Email not found"));
+        if (!passwordEncoder.matches(logInDTO.getPassword(), customer.getPassword())) {
+            throw new IllegalArgumentException("Wrong password");
+        }
+
+        UserDetails userDetails = new User(customer.getEmail(), customer.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        JwtAuthenticationResponseDTO responseDTO = new JwtAuthenticationResponseDTO();
+        responseDTO.setToken(jwtService.generateToken(userDetails));
+        return responseDTO;
+    }
+
+    public JwtAuthenticationResponseDTO signIn(SignInDTO signInDTO) {
+        if (customerRepository.findByEmail(signInDTO.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("Email already in use");
+        }
+        Customer customer = new Customer();
+        customer.setEmail(signInDTO.getEmail());
+        customer.setPassword(passwordEncoder.encode(signInDTO.getPassword()));
+        customer.setName(signInDTO.getEmail());
+        customer.setRegistrationDate(signInDTO.getRegistrationDate());
+        customerRepository.save(customer);
+
+        UserDetails userDetails = new User(customer.getEmail(), customer.getPassword(), List.of(new SimpleGrantedAuthority("ROLE_USER")));
+        JwtAuthenticationResponseDTO responseDTO = new JwtAuthenticationResponseDTO();
+        responseDTO.setToken(jwtService.generateToken(userDetails));
+        return responseDTO;
+    }
+
+
 
     //--------ADMIN--------//
     //----GET----//
@@ -283,5 +335,4 @@ public class CustomerService{
             return (UserDetails) customer;
         };
     }
-
 }

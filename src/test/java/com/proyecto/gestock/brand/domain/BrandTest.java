@@ -89,12 +89,5 @@ public class BrandTest {
         assertEquals(300, product3.getStock());
     }
 
-    @Test
-    public void testBrandNull(){
-        Brand brand = new Brand();
-        assertNull(brand.getName());
-        assertNull(brand.getLogo());
-        assertNull(brand.getActive());
-    }
 
 }

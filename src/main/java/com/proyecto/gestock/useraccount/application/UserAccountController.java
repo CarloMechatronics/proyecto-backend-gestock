@@ -1,5 +1,8 @@
 package com.proyecto.gestock.useraccount.application;
 
+import com.proyecto.gestock.authentication.dto.JwtAuthenticationResponseDTO;
+import com.proyecto.gestock.authentication.dto.LogInDTO;
+import com.proyecto.gestock.authentication.dto.SignInDTO;
 import com.proyecto.gestock.useraccount.domain.UserAccount;
 import com.proyecto.gestock.useraccount.domain.UserAccountService;
 import com.proyecto.gestock.useraccount.dto.UserAccountDTO;

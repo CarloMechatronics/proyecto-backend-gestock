@@ -12,22 +12,20 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/auth")
 public class AuthenticationController {
-    private AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
-
-     @Autowired
+    @Autowired
     public AuthenticationController(AuthenticationService authenticationService) {
-         this.authenticationService = authenticationService;
-     }
+        this.authenticationService = authenticationService;
+    }
 
-     @PostMapping("/login")
-    public ResponseEntity<JwtAuthenticationResponseDTO> login(@RequestBody LogInDTO logInDTO){
-         return ResponseEntity.ok(authenticationService.login(logInDTO));
-     }
+    @PostMapping("/login")
+    public ResponseEntity<JwtAuthenticationResponseDTO> login(@RequestBody LogInDTO logInDTO) {
+        return ResponseEntity.ok(authenticationService.login(logInDTO));
+    }
 
-     @PostMapping("/signin")
-    public ResponseEntity<JwtAuthenticationResponseDTO> signin(@RequestBody SignInDTO signInDTO){
-            return ResponseEntity.ok(authenticationService.signIn(signInDTO));
-     }
-
+    @PostMapping("/signin")
+    public ResponseEntity<JwtAuthenticationResponseDTO> signin(@RequestBody SignInDTO signInDTO) {
+        return ResponseEntity.ok(authenticationService.signIn(signInDTO));
+    }
 }

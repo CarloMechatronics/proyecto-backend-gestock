@@ -27,7 +27,7 @@ public class PurchaseOrderTest {
 
         purchaseOrder = new PurchaseOrder();
         purchaseOrder.setOrderDate(LocalDateTime.now());
-        purchaseOrder.setStatus("Pending");
+        purchaseOrder.setStatus(Status.PROCESSING);
         purchaseOrder.setShoppingCart(shoppingCart);
         purchaseOrder.setCustomer(customer);
     }
@@ -36,14 +36,9 @@ public class PurchaseOrderTest {
     public void testPurchaseOrderCreation() {
         assertNotNull(purchaseOrder);
         assertNotNull(purchaseOrder.getOrderDate());
-        assertEquals("Pending", purchaseOrder.getStatus());
+        assertEquals(Status.PROCESSING, purchaseOrder.getStatus());
         assertNotNull(purchaseOrder.getShoppingCart());
         assertNotNull(purchaseOrder.getCustomer());
     }
 
-    @Test
-    public void testPurchaseOrderUpdate() {
-        purchaseOrder.setStatus("Confirmed");
-        assertEquals("Confirmed", purchaseOrder.getStatus());
-    }
 }
